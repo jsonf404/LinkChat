@@ -1,9 +1,0 @@
-#error_tips[state='normal']
-{
-   color: green;
-}
-
-#error_tips[state='err']
-{
-   color: red;
-}
