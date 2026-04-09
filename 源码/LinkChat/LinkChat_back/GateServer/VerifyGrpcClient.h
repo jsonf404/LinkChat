@@ -14,7 +14,6 @@ GateServer网关类，向本类VerifyGrpcClient发送邮箱以获取验证码
 /*
 这个类其实也是一个rpcpool连接池管理类，在这个类的构造函数里面初始化连接池，每次只调用一个连接，用完还回去
 */
-
 #pragma once
 
 #include <grpcpp/grpcpp.h>
@@ -25,9 +24,9 @@ using grpc::Channel;
 using grpc::Status;
 using grpc::ClientContext;
 
-using message::GetVarifyReq;
-using message::GetVarifyRsp;
-using message::VarifyService;
+using message::GetVerifyReq;
+using message::GetVerifyRsp;
+using message::VerifyService;
 
 //rpc连接池
 class RPCconPool
@@ -48,16 +47,16 @@ public:
 
     void Close();
 
-    std::unique_ptr<VarifyService::Stub> getConnection();
+    std::unique_ptr<VerifyService::Stub> getConnection();
 
-    void returnConnection(std::unique_ptr<VarifyService::Stub> context);
+    void returnConnection(std::unique_ptr<VerifyService::Stub> context);
 
 private:
     std::atomic<bool> b_stop_;
     size_t _poolsize;
     std::string _host;
     std::string _port;
-    std::queue<std::unique_ptr<VarifyService::Stub>> _connections;//唯一持有stub，Stub 就是“本地对象和远程服务”的桥梁
+    std::queue<std::unique_ptr<VerifyService::Stub>> _connections;//唯一持有stub，Stub 就是“本地对象和远程服务”的桥梁
     std::condition_variable cond_;//C++11 引入的线程同步原语，防止线程忙等空转消耗cpu，让线程直接休眠，条件满足再唤醒，不消耗cpu
     std::mutex mutex_;//互斥，控制队列线程安全
 };
@@ -67,7 +66,7 @@ class VerifyGrpcClient :public Singleton<VerifyGrpcClient>//单例，全局只需要一个
     friend class Singleton<VerifyGrpcClient>;//强制单例模式
 
 public:
-    GetVarifyRsp GetVarifyCode(std::string email);
+    GetVerifyRsp GetVerifyCode(std::string email);
 
 private:
     VerifyGrpcClient();

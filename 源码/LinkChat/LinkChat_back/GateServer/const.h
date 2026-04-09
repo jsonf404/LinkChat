@@ -27,7 +27,7 @@ enum ErrorCodes
 	RPCFailed = 1002,
 	VerifyExpired=1003,//验证码过期
 	VerifyCodeError=1004,//验证码错误
-	UserExist=1005,//用户存在
+	UserExist=1005,//用户已存在
 	PasswordError=1006,//密码错误
 	EmailNotMatch=1007,//邮箱不匹配
 	PasswordupdataError=1008,//更新密码失败
@@ -39,7 +39,7 @@ enum ErrorCodes
 class Defer
 {
 public:
-	Defer(std::function<void()> func):func_(func){}
+	Defer(std::function<void()> func):func_(move(func)){}
 
 	~Defer()
 	{

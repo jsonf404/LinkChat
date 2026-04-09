@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid')
 const emailModule = require('./email')
 const redis_module = require('./redis')
 
-async function GetVarifyCode(call, callback) {
+async function GetVerifyCode(call, callback) {
   console.log("email is ", call.request.email)
   try {
     let query_res = await redis_module.GetRedis(const_module.code_prefix + call.request.email);
@@ -52,8 +52,6 @@ async function GetVarifyCode(call, callback) {
       }
     }
 
-
-
     console.log("uniqueId is ", uniqueId)
     let text_str = '您的验证码为' + uniqueId + '请一分钟内完成注册'
     //发送邮件
@@ -86,9 +84,17 @@ async function GetVarifyCode(call, callback) {
 
 function main() {
   var server = new grpc.Server()
-  server.addService(message_proto.VarifyService.service, { GetVarifyCode: GetVarifyCode })
-  server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {//端口一致，调用这里启动的 gRPC Server
-    console.log('grpc server started')
+  server.addService(message_proto.VerifyService.service, { GetVerifyCode: GetVerifyCode })
+
+  // 建议将地址改为 127.0.0.1 避免某些 Windows 防火墙拦截
+  server.bindAsync('127.0.0.1:50051', grpc.ServerCredentials.createInsecure(), (err, port) => {
+    if (err) {
+      console.error(`绑定失败: ${err.message}`);
+      return;
+    }
+    // 只有进入这个回调且没有 err，才说明端口真正监听成功了
+    console.log(`验证码服务功能成功启动在端口: ${port}`);
+    // server.start(); // 如果是旧版本 @grpc/grpc-js 需要这行，新版本 bindAsync 成功即开始
   })
 }
 

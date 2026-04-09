@@ -1,6 +1,4 @@
-/*
-DAO指数据库数据操作，本类包含了数据库连接池和DAO这个专门操作数据库数据的类,即增删查改等操作
-*/
+/* DAO指数据库数据操作，本类包含了数据库连接池和DAO这个专门操作数据库数据的类,即增删查改等操作 */
 #pragma once
 #include "const.h"
 #include <thread>
@@ -161,8 +159,8 @@ struct UserInfo
 {
     std::string name;
     std::string pwd;
-    int uid;
     std::string email;
+    int uuid;
 };
 
 class MysqlDao
@@ -173,11 +171,8 @@ public:
 
     int RegUser(const std::string& name,const std::string& email,const std::string& pwd);
 
-    bool CheckEmail(const std::string& name,const std::string& email);
-
-    bool UpdatePwd(const std::string& name,const std::string& newpwd);
-
-    bool CheckPwd(const std::string& name,const std::string& pwd,UserInfo& userInfo);
+	bool CheckEmailPwd(const std::string& email, const std::string& pwd);
+	bool ResetPassword(const std::string& email, const std::string& newpwd);
 
 private:
     std::unique_ptr<MySqlPool> pool_;

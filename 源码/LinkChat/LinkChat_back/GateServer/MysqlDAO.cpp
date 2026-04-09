@@ -25,16 +25,17 @@ MysqlDao::~MysqlDao()
 int MysqlDao::RegUser(const std::string& name,const std::string& email,const std::string& pwd)
 {
     auto con = pool_->getConnection();
-    if (!con)
-    {
-        std::cout << "注册过程无法获取连接" << std::endl;
-        return -1;
-    }
 
     //自动归还连接
     Defer defer([this, &con]() {
         if (con) pool_->returnConnection(std::move(con));
         });
+
+    if (!con)
+    {
+        std::cout << "注册过程无法获取连接" << std::endl;
+        return -1;
+    }
 
     try //调用mysql内的过程函数，并取到那个过程函数返回的值
     {
@@ -54,107 +55,57 @@ int MysqlDao::RegUser(const std::string& name,const std::string& email,const std
     }
 }
 
-
-
-/* ================= CheckEmail ================= */
-
-bool MysqlDao::CheckEmail(const std::string& name,
-    const std::string& email)
-{
-    auto con = pool_->getConnection();
-    try {
-        if (con == nullptr) {
-            return false;
-        }
-
-        auto res = con->_con->sql("SELECT email FROM user WHERE name = ?").bind(name).execute();
-
-        if (res.count() == 0) {
-            pool_->returnConnection(std::move(con));
-            return true;
-        }
-
-        std::string db_email = res.fetchOne()[0].get<std::string>();
-        pool_->returnConnection(std::move(con));
-        return db_email == email;
-    }
-    catch (const mysqlx::Error& e) {
-        pool_->returnConnection(std::move(con));
-        std::cerr << "MySQL Error: " << e.what() << std::endl;
-        return false;
-    }
-}
-
-
-
-
-/* ================= UpdatePwd ================= */
-
-bool MysqlDao::UpdatePwd(const std::string& name,
-    const std::string& newpwd)
-{
-    auto con = pool_->getConnection();
-    try {
-        if (con == nullptr) {
-            return false;
-        }
-
-        auto res = con->_con->sql("UPDATE user SET pwd = ? WHERE name = ?")
-            .bind(newpwd, name)
-            .execute();
-
-        pool_->returnConnection(std::move(con));
-        return res.getAffectedItemsCount() > 0;
-    }
-    catch (const mysqlx::Error& e) {
-        pool_->returnConnection(std::move(con));
-        std::cerr << "MySQL Error: " << e.what() << std::endl;
-        return false;
-    }
-}
-
-/* ================= CheckPwd ================= */
-bool MysqlDao::CheckPwd(const std::string& name,
-    const std::string& pwd,
-    UserInfo& userInfo)
+//检验邮箱和用户名是否匹配
+bool MysqlDao::CheckEmailPwd(const std::string& email, const std::string& pwd)
 {
     auto con = pool_->getConnection();
 
-    //RALL实现，保证会归还连接
+    //自动归还连接
     Defer defer([this, &con]() {
-        pool_->returnConnection(std::move(con));
+        if (con) pool_->returnConnection(std::move(con));
         });
 
-    try {
-        if (con == nullptr) 
-        {
-            return false;
-        }
-
-        auto res = con->_con->sql("SELECT uid,name,email,pwd FROM user WHERE name = ?")
-            .bind(name)
-            .execute();
-
-        if (res.count() == 0) {
-            return false;
-        }
-
-        auto row = res.fetchOne();
-        std::string db_pwd = row[3].get<std::string>();
-
-        if (pwd != db_pwd) {
-            return false;
-        }
-
-        userInfo.uid = row[0].get<int>();
-        userInfo.name = row[1].get<std::string>();
-        userInfo.email = row[2].get<std::string>();
-        userInfo.pwd = db_pwd;
-
-        return true;
+	//不使用过程函数，直接查询
+    if (!con)
+    {
+        std::cout << "检验邮箱和密码过程无法获取连接" << std::endl;
+        return false;
     }
-    catch (const mysqlx::Error& e) {
-        std::cerr << "MySQL Error: " << e.what() << std::endl;
+    try
+    {
+        auto res = con->_con->sql("SELECT 1 FROM user WHERE email=? AND pwd=?").bind(email, pwd).execute();
+        auto row = res.fetchOne();
+        return !row.isNull();
+    }
+    catch (const mysqlx::Error& e)
+    {
+        std::cout << "检验邮箱和密码过程捕获异常" << e.what() << std::endl;
+        return false;
+	}
+}
+
+//重置密码
+bool MysqlDao::ResetPassword(const std::string& email, const std::string& newpwd)
+{
+    auto con = pool_->getConnection();
+    //自动归还连接
+    Defer defer([this, &con]() {
+        if (con) pool_->returnConnection(std::move(con));
+        });  
+
+    if (!con)
+    {
+        std::cout << "重置密码过程无法获取连接" << std::endl;
+        return false;
+    }
+    try
+    {
+        auto res = con->_con->sql("UPDATE user SET pwd=? WHERE email=?").bind(newpwd, email).execute();
+        return res.getAffectedItemsCount() > 0;
+    }
+    catch (const mysqlx::Error& e)
+    {
+        std::cout << "重置密码过程捕获异常" << e.what() << std::endl;
         return false;
     }
 }

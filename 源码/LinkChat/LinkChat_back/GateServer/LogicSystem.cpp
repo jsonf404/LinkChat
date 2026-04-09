@@ -4,16 +4,46 @@
 #include "redisPool.h"
 #include <mysqlx/xdevapi.h>
 #include "MysqlMgr.h"
+#include "StatusGrpcClient.h"
+#include <vector>
 
-void LogicSystem::RegGet(std::string url, httpHandler handler)
-{
-	_get_handlers[url] = handler;//把url绑定到一个可调用处理
+void LogicSystem::RegGet(const std::string& url, const httpHandler& handler)
+{		
+    _get_handlers[url] = handler;
 }
 
-void LogicSystem::RegPost(std::string url, httpHandler handler)
+void LogicSystem::RegPost(const std::string& url,const httpHandler& handler)
 {
-	_post_handlers[url] = handler;//把url绑定到一个可调用处理
+	_post_handlers[url] = handler;//把url绑定到一个可 callable 处理
 }
+
+bool LogicSystem::handleGet(std::string path, std::shared_ptr<httpConnection> connect)
+{
+	//检查路由是否注册
+	auto it = _get_handlers.find(path);
+	if (it == _get_handlers.end())
+	{
+		return false;
+	}
+
+	/*it是一个pair，第二个参数类型是httpHandler，上面在构造函数初始化时里面插入了一个pair，其第二个元素就是一个lambda表达式，
+	即以参数connect调用了那个lambda表达式*/
+	it->second(connect);
+	return true;
+}
+
+bool LogicSystem::handlePost(std::string path, std::shared_ptr<httpConnection> connect)
+{
+	auto it = _post_handlers.find(path);
+	if (it == _post_handlers.end())
+	{
+		return false;
+	}
+
+	it->second(connect);//不用返回了，返回类型都在lambda表达式里面了
+	return true;
+}
+
 
 LogicSystem::LogicSystem()
 { 
@@ -22,19 +52,6 @@ LogicSystem::LogicSystem()
 	此时调用RegGet，向map中插入了一个key：路由，value：被转换成function的lambda表达式
 	之后根据路由找到value时，调用value就可以执行这个lambda表达式
 	*/
-	//测试代码
-	/*RegGet("/get_test", [](std::shared_ptr<httpConnection> connection)
-	{
-		beast::ostream(connection->_response.body()) << "receive get_test req"<<std::endl;
-
-		int i = 0;
-		for (auto& elem : connection->_get_query)
-		{
-			i++;
-			beast::ostream(connection->_response.body()) << "param" << i << " key is " << elem.first;
-			beast::ostream(connection->_response.body()) << ", " << " value is " << elem.second << std::endl;
-		}
-		});*/
 
 		//处理客户端post请求验证码的请求，//http的url本身不是json格式，但是post请求的数据一般在body里面，body是json格式
 	RegPost("/get_verifycode", [](std::shared_ptr<httpConnection> connection)
@@ -69,11 +86,10 @@ LogicSystem::LogicSystem()
 			std::cout << "解析成功得到的email是: " << email << std::endl;
 
 			//同步调用 gRPC 服务获取验证码。此时就创建了VerifyGrpcClient这个单例，自动初始化了rpc连接池且只初始化一次
-			GetVarifyRsp grpc_rsp = VerifyGrpcClient::GetInstance()->GetVarifyCode(email);
-
+			GetVerifyRsp grpc_rsp = VerifyGrpcClient::GetInstance()->GetVerifyCode(email);
+			
 			resp["error"] = ErrorCodes::Success;//返回json内容
 			resp["email"] = email;
-
 			//将 JSON 对象格式 序列化为 JSON 字符串文本，写入 HTTP body。QT端再根据json格式解析出对应的json对象格式
 			beast::ostream(connection->_response.body()) << resp.toStyledString();
 			return true;
@@ -102,7 +118,7 @@ LogicSystem::LogicSystem()
 
 			auto pool = RedisPool::GetInstance();
 			// ================== 1. 校验验证码 ==================
-			std::string varify_code;
+			std::string verify_code;
 
 			auto redis = pool->getConnection();
 			if (!redis) 
@@ -113,7 +129,7 @@ LogicSystem::LogicSystem()
 				beast::ostream(connection->_response.body()) << resp.toStyledString();
 				return true;
 			}
-
+ 
 			try
 			{
 				auto val = redis->get("code_" + req["email"].asString());//nodejs代码往redis里面插入的验证码有“code_” 前缀
@@ -127,7 +143,7 @@ LogicSystem::LogicSystem()
 					return true;
 				}
 
-				varify_code = *val;
+				verify_code = *val;
 				pool->returnConnection(redis);
 			}
 			catch (const sw::redis::Error& e)
@@ -140,7 +156,7 @@ LogicSystem::LogicSystem()
 				return true;
 			}
 
-			if (varify_code != req["varifycode"].asString())
+			if (verify_code != req["verifycode"].asString())
 			{
 				std::cout << "验证码错误" << std::endl;
 				resp["error"] = ErrorCodes::VerifyCodeError;
@@ -169,43 +185,158 @@ LogicSystem::LogicSystem()
 			}
 
 			// ================== 3. 注册成功的后续逻辑,把相关信息返回给客户端 ==================
-			resp["error"] = 0;
+			resp["error"] = ErrorCodes::Success;
 			resp["uuid"] = uuid;
 			resp["email"] = req["email"].asString();
 			resp["user"] = req["user"].asString();
 			resp["passwd"] = req["passwd"].asString();                
 			//resp["confirm"] = req["confirm"].asString();
-			resp["varifycode"] = req["varifycode"].asString();
+			resp["verifycode"] = req["verifycode"].asString();
 
 			beast::ostream(connection->_response.body()) << resp.toStyledString();
 			std::cout << "注册成功，已将注册信息回传给客户端" << std::endl;
 			return true;
 		});
-}
-	
-bool LogicSystem::handleGet(std::string path, std::shared_ptr<httpConnection> connect)
-{
-	//检查路由是否注册
-	auto it = _get_handlers.find(path);
-	if (it == _get_handlers.end())
-	{
-		return false;
-	}
 
-	/*it是一个pair，第二个参数类型是httpHandler，上面在构造函数初始化时里面插入了一个pair，其第二个元素就是一个lambda表达式，
-	即以参数connect调用了那个lambda表达式*/
-	it->second(connect);
-	return true;
-}
+		// 处理客户端 post 重置密码请求
+		RegPost("/reset_password", [](std::shared_ptr<httpConnection> connection)
+		{
+			auto body = boost::beast::buffers_to_string(connection->_request.body().data());
+			std::cout << "接收到的重置密码请求体为：" << body << std::endl;
+			connection->_response.set(http::field::content_type, "application/json; charset=utf-8");
 
-bool LogicSystem::handlePost(std::string path, std::shared_ptr<httpConnection> connect)
-{
-	auto it = _post_handlers.find(path);
-	if (it == _post_handlers.end())
-	{
-		return false;
-	}
+			Json::Value resp;//接受的json
+			Json::Value req;//返回的json
+			Json::Reader reader;//解析器
 
-	it->second(connect);//不用返回了，返回类型都在lambda表达式里面了
-	return true;
+			if (!reader.parse(body, req))
+			{
+				std::cout << "解析重置密码请求(json)失败" << std::endl;
+				resp["error"] = ErrorCodes::Error_Json;
+				resp["message"] = "解析重置密码请求(json)失败";
+				beast::ostream(connection->_response.body()) << resp.toStyledString();
+				return true;
+			}
+			
+			//===========校验验证码，和注册时的验证码校验一样
+			auto pool = RedisPool::GetInstance();
+			std::string verify_code;
+
+			auto redis = pool->getConnection();
+			if (!redis)
+			{
+				std::cout << "redis连接失败" << std::endl;
+				resp["error"] = ErrorCodes::RedisError;
+				resp["message"] = "redis unavailable";
+				beast::ostream(connection->_response.body()) << resp.toStyledString();
+				return true;
+			}
+
+			try
+			{
+				auto val = redis->get("code_" + req["email"].asString());//nodejs代码往redis里面插入的验证码有“code_” 前缀
+				if (!val)
+				{
+					std::cout << "验证码过期" << std::endl;
+					pool->returnConnection(redis);
+					resp["error"] = ErrorCodes::VerifyExpired;
+					resp["message"] = "验证码过期";
+					beast::ostream(connection->_response.body()) << resp.toStyledString();
+					return true;
+				}
+
+				verify_code = *val;
+				pool->returnConnection(redis);
+			}
+			catch (const sw::redis::Error& e)
+			{
+				std::cout << "验证码服务捕获到异常" << std::endl;
+				pool->returnConnection(redis);
+				resp["error"] = ErrorCodes::RedisError;
+				resp["message"] = "redis error";
+				beast::ostream(connection->_response.body()) << resp.toStyledString();
+				return true;
+			}
+
+			if (verify_code != req["verifycode"].asString())
+			{
+				std::cout << "验证码错误" << std::endl;
+				resp["error"] = ErrorCodes::VerifyCodeError;
+				resp["message"] = "验证码错误";
+				beast::ostream(connection->_response.body()) << resp.toStyledString();
+				return true;
+			}
+
+			//更新密码为用户输入的新密码
+			bool success = MysqlMgr::GetInstance()->ResetPassword(req["email"].asString(),req["passwd"].asString());
+			if (!success)
+			{
+				std::cout << "密码重置失败" << std::endl;
+				resp["error"] = ErrorCodes::PasswordupdataError;
+				resp["message"] = "密码重置失败";
+				beast::ostream(connection->_response.body()) << resp.toStyledString();
+				return true;
+			}	
+
+			//密码重置成功，返回成功信息给客户端
+			resp["error"] = ErrorCodes::Success;
+			resp["email"] = req["email"].asString();
+			resp["passwd"] = req["passwd"].asString();
+			beast::ostream(connection->_response.body()) << resp.toStyledString();
+			return true;
+			});
+
+		//处理客户端的登陆请求，校验邮箱和密码是否正确
+		RegPost("/user_login", [](std::shared_ptr<httpConnection> connection)
+		{
+			auto body = boost::beast::buffers_to_string(connection->_request.body().data());
+			std::cout << "接收到的登录请求体为：" << body << std::endl;
+			connection->_response.set(http::field::content_type, "application/json; charset=utf-8"); 
+
+			Json::Value resp;//接受的json
+			Json::Value req;//返回的json
+			Json::Reader reader;//解析器
+
+			if (!reader.parse(body, req))
+			{
+				std::cout << "解析登录请求(json)失败" << std::endl;
+				resp["error"] = ErrorCodes::Error_Json;
+				resp["message"] = "解析登录请求(json)失败";
+				beast::ostream(connection->_response.body()) << resp.toStyledString();
+				return true;
+			}
+
+			//这个地方的逻辑是检验邮箱和密码是不是匹配的
+			UserInfo user_info;
+			bool match = MysqlMgr::GetInstance()->CheckEmailPwd(req["email"].asString(), req["passwd"].asString());
+			if (!match)
+			{
+				std::cout << "邮箱和密码不匹配" << std::endl;
+				resp["error"] = ErrorCodes::PasswordError;
+				resp["message"] = "邮箱和密码不匹配";
+				beast::ostream(connection->_response.body()) << resp.toStyledString();
+				return true;
+			}
+
+			////查询StatusServer找到合适的ChatServer，把ChatServer的ip和port返回给客户端。此时的StatusServer类似于客户端
+			//auto reply = StatusGrpcClient::GetInstance()->GetChatServer(user_info.uuid);
+			//if (reply.error())
+			//{
+			//	std::cout << "StatusServer服务异常" << std::endl;
+			//	resp["error"] = ErrorCodes::RPCFailed;
+			//	resp["message"] = "StatusServer服务异常";
+			//	beast::ostream(connection->_response.body()) << resp.toStyledString();
+			//	return true;
+			//}
+
+			////登录成功，返回用户信息和ChatServer的ip和port给客户端
+			//resp["error"] = ErrorCodes::Success;
+			//resp["uuid"] = user_info.uuid;
+			//resp["email"] = user_info.email;
+			//resp["host"] = reply.host();
+			//resp["port"] = reply.port();
+			//resp["token"] = reply.token();
+			//beast::ostream(connection->_response.body()) << resp.toStyledString();
+			//return true;
+			});
 }

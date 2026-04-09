@@ -13,15 +13,15 @@ VerifyGrpcClient::VerifyGrpcClient()//构造函数初始化
 }
 
 //跨进程调用获取验证码的服务，grpc。在logicsystem中被使用到
-GetVarifyRsp VerifyGrpcClient::GetVarifyCode(std::string email)
+GetVerifyRsp VerifyGrpcClient::GetVerifyCode(std::string email)
 {
     ClientContext context;//一次grpc的上下文
-    GetVarifyRsp reply;//nodejs返回的验证码,这里是grpc
-    GetVarifyReq request;//发送给nodejs
+    GetVerifyRsp reply;//nodejs返回的验证码,这里是grpc
+    GetVerifyReq request;//发送给nodejs
     request.set_email(email);
 
-    //注意这个GetVarifyCode和函数名不是一个东西，这个GetVarifyCode是导入的包里面的东西，专门用来跨进程调用的
-    Status status = _pool->getConnection()->GetVarifyCode(&context, request, &reply);//真正的跨进程调用nodejs，这里用到了grpc
+    //注意这个GetVerifyCode和函数名不是一个东西，这个GetVerifyCode是导入的包里面的东西，专门用来跨进程调用的
+    Status status = _pool->getConnection()->GetVerifyCode(&context, request, &reply);//真正的跨进程调用nodejs，这里用到了grpc
 
     if (status.ok())
     {
@@ -44,7 +44,7 @@ RPCconPool::RPCconPool(size_t poolsize, std::string host, std::string port)
         //指定验证码服务地址，gRPC通信方式
         //每个线程一个信使
         std::shared_ptr<Channel> channel = grpc::CreateChannel(host+":"+port, grpc::InsecureChannelCredentials());
-        _connections.push(VarifyService::NewStub(channel));
+        _connections.push(VerifyService::NewStub(channel));
     }
 }
 
@@ -55,7 +55,7 @@ void RPCconPool::Close()
     cond_.notify_all();//唤醒其他在wait的线程，让他们知道已经stop了，池已关闭，安全退出线程逻辑
 }
 
-std::unique_ptr<VarifyService::Stub> RPCconPool::getConnection()
+std::unique_ptr<VerifyService::Stub> RPCconPool::getConnection()
 {
     std::unique_lock<std::mutex> lock(mutex_);
 
@@ -78,7 +78,7 @@ std::unique_ptr<VarifyService::Stub> RPCconPool::getConnection()
     return context;
 }
 
-void RPCconPool::returnConnection(std::unique_ptr<VarifyService::Stub> context)//归还连接
+void RPCconPool::returnConnection(std::unique_ptr<VerifyService::Stub> context)//归还连接
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (b_stop_)

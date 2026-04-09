@@ -24,8 +24,8 @@ public:
 	bool handleGet(std::string,std::shared_ptr<httpConnection>);//连接是否成功，就是httpConnection里面的 success
 	bool handlePost(std::string, std::shared_ptr<httpConnection>);
 
-	void RegGet(std::string, httpHandler handler);//负责建立URL → handler 映射，把 URL 和处理函数绑定起来
-	void RegPost(std::string, httpHandler handler); 
+	void RegGet(const std::string&url, const httpHandler& handler);//负责建立URL → handler 映射，把 URL 和处理函数绑定起来
+	void RegPost(const std::string&url, const httpHandler& handler); 
 
 private:
 	LogicSystem();//私有构造函数，禁止外部创建，只能通过 GetInstance() 访问

@@ -148,6 +148,7 @@
     <ClCompile Include="MysqlDAO.cpp" />
     <ClCompile Include="MysqlMgr.cpp" />
     <ClCompile Include="redisPool.cpp" />
+    <ClCompile Include="StatusGrpcClient.cpp" />
     <ClCompile Include="VerifyGrpcClient.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +164,7 @@
     <ClInclude Include="MysqlMgr.h" />
     <ClInclude Include="redisPool.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="StatusGrpcClient.h" />
     <ClInclude Include="VerifyGrpcClient.h" />
   </ItemGroup>
   <ItemGroup>
