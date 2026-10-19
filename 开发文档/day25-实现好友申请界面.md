@@ -1,7 +1,7 @@
 ## 简介
 本文介绍如何实现好友申请界面, 其效果如下图所示
 
-![https://cdn.llfc.club/1720423649556.jpg](https://cdn.llfc.club/1720423649556.jpg)
+![img/1720423649556.jpg](img/1720423649556.jpg)
 
 在此之前我们需要先定义一个ClickedOnceLabel类，支持点击一次的label功能。
 
@@ -118,7 +118,7 @@ public slots:
 ```
 接下来我们修改ui使其变成如下布局
 
-![https://cdn.llfc.club/1720423721312.jpg](https://cdn.llfc.club/1720423721312.jpg)
+![img/1720423721312.jpg](img/1720423721312.jpg)
 
 然后我们逐个实现功能,构造函数分别实现信号的链接和成员初始化，析构函数回收必要的资源。
 ``` cpp
@@ -812,11 +812,4 @@ void ApplyFriend::SlotApplySure()
     border-radius: 20px; /* 设置圆角 */
 }
 ```
-
-## 视频
-
-[https://www.bilibili.com/video/BV1ZM4m127z8/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV1ZM4m127z8/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
-
-## 源码链接
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat) 
 

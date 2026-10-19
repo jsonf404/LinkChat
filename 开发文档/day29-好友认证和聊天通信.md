@@ -1091,15 +1091,7 @@ void ChatDialog::slot_text_chat_msg(std::shared_ptr<TextChatMsg> msg)
 
 ## 效果展示
 
-![https://cdn.llfc.club/1724470182274.jpg](https://cdn.llfc.club/1724470182274.jpg)
+![img/1724470182274.jpg](img/1724470182274.jpg)
 
 
-
-## 源码连接
-
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat)
-
-## 视频连接
-
-[https://www.bilibili.com/video/BV1ib421J745/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV1ib421J745/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
 

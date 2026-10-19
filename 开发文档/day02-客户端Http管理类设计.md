@@ -6,7 +6,7 @@ ui->lineEdit_Confirm->setEchoMode(QLineEdit::Password);
 ```
 我们在注册界面的ui里添加一个widget，widget内部包含一个tip居中显示，用来提示错误。设置label的显示为文字居中。
 
-![https://cdn.llfc.club/1709103910427.jpg](https://cdn.llfc.club/1709103910427.jpg)
+![img/1709103910427.jpg](img/1709103910427.jpg)
 
 我们在qss里添加err_tip样式，根据不同的状态做字体显示
 ``` qss

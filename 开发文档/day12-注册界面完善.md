@@ -477,7 +477,7 @@ void RegisterDialog::ChangeTipPage()
 ```
 在RegisterDialog.ui中stackwidget的page2添加标签和返回按钮
 
-![https://cdn.llfc.club/1712821604946.jpg](https://cdn.llfc.club/1712821604946.jpg)
+![img/1712821604946.jpg](img/1712821604946.jpg)
 
 在RegisterDialog构造函数中添加定时器回调
 ``` cpp

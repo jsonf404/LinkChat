@@ -203,9 +203,9 @@ CMake是一个跨平台的开源构建工具，可以用于自动化构建、测
 
 ### NASM
 编译grpc需要准备nasm,所以也要下载nasm, 下载地址为[https://www.nasm.us/](https://www.nasm.us/),点击下载指定版本，安装即可，记得安装后把安装的路径配置在环境变量里，我的装载了C盘
-![https://cdn.llfc.club/1685268741914.jpg](https://cdn.llfc.club/1685268741914.jpg)
+![img/1685268741914.jpg](img/1685268741914.jpg)
 环境变量配置如下
-![https://cdn.llfc.club/1685268920381.jpg](https://cdn.llfc.club/1685268920381.jpg)
+![img/1685268920381.jpg](img/1685268920381.jpg)
 
 有部分博主说要安装go和perl，我感觉不需要，但是我的电脑里确实有开发环境，这里还是告诉大家如何安装go和Perl
 ### Go安装
@@ -222,7 +222,7 @@ Perl安装可以去官网下载[https://www.activestate.com/products/perl/](http
 ## 编译grpc
 接下来我们需要用CMake编译grpc来生成我们需要的visual studio 项目
 
-![https://cdn.llfc.club/1685271209281.jpg](https://cdn.llfc.club/1685271209281.jpg)
+![img/1685271209281.jpg](img/1685271209281.jpg)
 
 1是grpc源码目录
 2是grpc生成的visual studio项目目录
@@ -232,15 +232,6 @@ Perl安装可以去官网下载[https://www.activestate.com/products/perl/](http
 接下来点击generate生成项目，大约几分钟可以生成，生成成功后我们点击open project打开工程，此时就是用visual sutido 2019打开grpc工程了。
 接下来我们设置编译平台为64位，选择Debug模式，这里大家尽量编译Release版，Release版压缩的更好一点。
 选择All项目进行全量编译，编译后就可以在Debug或Release文件夹找到对应生成的库文件和exe了。
-
-## 总结
-本文介绍了windows环境下如何配置grpc项目和编译生成我们需要的库。
-如果大家还是不能顺利生成编译所需的库，可以用我的，这个源码在linux和windows都能用，源码包括第三方库都下载好了，网盘地址：
-[https://pan.baidu.com/s/1BBaAZ8-R-GSxxcy2s7TRWA?pwd=ybno](https://pan.baidu.com/s/1BBaAZ8-R-GSxxcy2s7TRWA?pwd=ybno) 
-提取码：ybno 
-
-
-
 
 
 

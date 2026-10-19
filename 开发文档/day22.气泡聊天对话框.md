@@ -2,18 +2,18 @@
 
 我们期待实现如下绿色的气泡对话框
 
-![https://cdn.llfc.club/1718417551126.jpg](https://cdn.llfc.club/1718417551126.jpg)
+![img/1718417551126.jpg](img/1718417551126.jpg)
 
 对于我们自己发出的信息，我们可以实现这样一个网格布局管理
 
-![https://cdn.llfc.club/1718423760358.jpg](https://cdn.llfc.club/1718423760358.jpg)
+![img/1718423760358.jpg](img/1718423760358.jpg)
 
 
 NameLabel用来显示用户的名字，Bubble用来显示聊天信息，Spacer是个弹簧，保证将NameLabel,IconLabel，Bubble等挤压到右侧。
 
 如果是别人发出的消息，我们设置这样一个网格布局
 
-![https://cdn.llfc.club/1718497364660.jpg](https://cdn.llfc.club/1718497364660.jpg)
+![img/1718497364660.jpg](img/1718497364660.jpg)
 
 下面是实现布局的核心代码
 
@@ -312,11 +312,4 @@ void ChatPage::on_send_btn_clicked()
 }
 ```
 ## 效果展示
-![https://cdn.llfc.club/1718499438435.jpg](https://cdn.llfc.club/1718499438435.jpg)
-
-## 源码和视频
-
-[https://www.bilibili.com/video/BV1Mz4218783/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV1Mz4218783/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
-
-## 源码链接
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat)
+![img/1718499438435.jpg](img/1718499438435.jpg)

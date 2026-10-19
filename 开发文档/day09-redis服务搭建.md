@@ -4,7 +4,7 @@
 
 我们启动客户端，点击注册按钮进入注册界面，输入邮箱并且点击获取验证码
 
-![https://cdn.llfc.club/1710646053282.jpg](https://cdn.llfc.club/1710646053282.jpg)
+![img/1710646053282.jpg](img/1710646053282.jpg)
 
 GateServer收到Client发送的请求后，会调用grpc 服务 访问VarifyServer，VarifyServer会随机生成验证码，并且调用邮箱模块发送邮件给指定邮箱。而且把发送的结果给GateServer，GateServer再将消息回传给客户端。
 
@@ -24,7 +24,7 @@ windows 版本下载地址:
 
 下载完成后解压
 
-![https://cdn.llfc.club/1710649614458.jpg](https://cdn.llfc.club/1710649614458.jpg)
+![img/1710649614458.jpg](img/1710649614458.jpg)
 
 修改redis.windows.conf, 并且修改端口
 ``` cpp
@@ -37,11 +37,11 @@ requirepass 123456
 ```
 启动redis 服务器` .\redis-server.exe .\redis.windows.conf`
 
-![https://cdn.llfc.club/1710649945760.jpg](https://cdn.llfc.club/1710649945760.jpg)
+![img/1710649945760.jpg](img/1710649945760.jpg)
 
 启动客户端 `.\redis-cli.exe -p 6380`, 输入密码登录成功
 
-![https://cdn.llfc.club/1710650063208.jpg](https://cdn.llfc.club/1710650063208.jpg)
+![img/1710650063208.jpg](img/1710650063208.jpg)
 
 ## Linux 安装redis服务
 
@@ -62,7 +62,7 @@ docker run -d --name llfc-redis -p 6380:6379 redis  --requirepass "123456"
 
 设置好ip和密码，点击测试连接连通就成功了
 
-![https://cdn.llfc.club/1710657223612.jpg](https://cdn.llfc.club/1710657223612.jpg)
+![img/1710657223612.jpg](img/1710657223612.jpg)
 
 ## widows编译和配置redis
 
@@ -80,26 +80,26 @@ windows版本redis下载地址
 
 因为是源码，所以进入msvc目录
 
-![https://cdn.llfc.club/1710725726234.jpg](https://cdn.llfc.club/1710725726234.jpg)
+![img/1710725726234.jpg](img/1710725726234.jpg)
 
 用visual studio打开sln文件，弹出升级窗口, 我的是vs2019所以升级到142
 
-![https://cdn.llfc.club/1710725937787.jpg](https://cdn.llfc.club/1710725937787.jpg)
+![img/1710725937787.jpg](img/1710725937787.jpg)
 
 只需要生成hiredis工程和Win32_Interop工程即可，分别点击生成,生成hiredis.lib和Win32_Interop.lib即可
 
 右键两个工程的属性，代码生成里选择运行时库加载模式为MDD(Debug模式动态运行加载)，为了兼容我们其他的库，其他的库也是MDD模式
 
-![https://cdn.llfc.club/1710726777016.jpg](https://cdn.llfc.club/1710726777016.jpg)
+![img/1710726777016.jpg](img/1710726777016.jpg)
 
 编译Win32_Interop.lib时报错， system_error不是std成员，
 
-![https://cdn.llfc.club/1710727129177.jpg](https://cdn.llfc.club/1710727129177.jpg)
+![img/1710727129177.jpg](img/1710727129177.jpg)
 
 解决办法为在Win32_variadicFunctor.cpp和Win32_FDAPI.cpp添加
 `#include <system_error>`,再右键生成成功
 
-![https://cdn.llfc.club/1710729372811.jpg](https://cdn.llfc.club/1710729372811.jpg)
+![img/1710729372811.jpg](img/1710729372811.jpg)
 
 将hiredis.lib和Win32_Interop.lib拷贝到`D:\cppsoft\reids\lib`
 
@@ -107,15 +107,15 @@ windows版本redis下载地址
 
 然后我们在visual studio中配置VC++ 包含目录
 
-![https://cdn.llfc.club/1710811823982.jpg](https://cdn.llfc.club/1710811823982.jpg)
+![img/1710811823982.jpg](img/1710811823982.jpg)
 
 配置VC++库目录
 
-![https://cdn.llfc.club/1710811986563.jpg](https://cdn.llfc.club/1710811986563.jpg)
+![img/1710811986563.jpg](img/1710811986563.jpg)
 
 然后在链接器->输入->附加依赖项中添加
 
-![https://cdn.llfc.club/1710812099185.jpg](https://cdn.llfc.club/1710812099185.jpg)
+![img/1710812099185.jpg](img/1710812099185.jpg)
 
 ## 代码测试
 
@@ -214,7 +214,7 @@ void TestRedis() {
 ```
 在主函数中调用TestRedis，编译项目时发现编译失败，提示
 
-![https://cdn.llfc.club/1710812579501.jpg](https://cdn.llfc.club/1710812579501.jpg)
+![img/1710812579501.jpg](img/1710812579501.jpg)
 
 在同时使用Redis连接和socket连接时，遇到了Win32_Interop.lib和WS2_32.lib冲突的问题, 因为我们底层用了socket作为网络通信，也用redis，导致两个库冲突。
 

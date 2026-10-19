@@ -1,7 +1,7 @@
 ## 搜索框
 我们需要实现如下效果
 
-![https://cdn.llfc.club/1717211817129.jpg](https://cdn.llfc.club/1717211817129.jpg)
+![img/1717211817129.jpg](img/1717211817129.jpg)
 
 输入框默认不显示关闭按钮，当输入文字后显示关闭按钮，点击关闭按钮清空文字
 
@@ -272,11 +272,11 @@ ChatDialog::ChatDialog(QWidget *parent) :
 
 我们要为聊天列表添加item，每个item包含的样式为
 
-![https://cdn.llfc.club/1717215988933.jpg](https://cdn.llfc.club/1717215988933.jpg)
+![img/1717215988933.jpg](img/1717215988933.jpg)
 
 对于这样的列表元素，我们采用设计师界面类设计非常方便, 新建设计师界面类ChatUserWid, 在ChatUserWid.ui中拖动布局如下
 
-![https://cdn.llfc.club/1717217007100.jpg](https://cdn.llfc.club/1717217007100.jpg)
+![img/1717217007100.jpg](img/1717217007100.jpg)
 
 我们定义一个基类ListItemBase
 
@@ -499,13 +499,5 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 
 ## 测试效果
 
-![https://cdn.llfc.club/1717218961063.jpg](https://cdn.llfc.club/1717218961063.jpg)
-
-## 源码链接
-
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat)
-
-## 视频链接
-
-[https://www.bilibili.com/video/BV13Z421W7WA/?spm_id_from=333.788&vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV13Z421W7WA/?spm_id_from=333.788&vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
+![img/1717218961063.jpg](img/1717218961063.jpg)
 

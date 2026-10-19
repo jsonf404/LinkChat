@@ -4,7 +4,7 @@
 ## 架构设计
 
 一个概要的结构设计如下图
-![https://cdn.llfc.club/1709009717000.jpg](https://cdn.llfc.club/1709009717000.jpg)
+![img/1709009717000.jpg](img/1709009717000.jpg)
 
 1. GateServer为网关服务，主要应对客户端的连接和注册请求，因为服务器是是分布式，所以GateServer收到用户连接请求后会查询状态服务选择一个负载较小的Server地址给客户端，客户端拿着这个地址直接和Server通信建立长连接。
 2. 当用户注册时会发送给GateServer, GateServer调用VarifyServer验证注册的合理性并发送验证码给客户端，客户端拿着这个验证码去GateServer注册即可。
@@ -13,13 +13,13 @@
 ## 创建应用
 我们先创建客户端的登录界面，先用qt创建qt application widgets
 
-![https://cdn.llfc.club/1709012628800.jpg](https://cdn.llfc.club/1709012628800.jpg)
+![img/1709012628800.jpg](img/1709012628800.jpg)
 
 项目名称叫做llfcchat，位置大家自己选择。
 
 接下来一路同意，最后生成项目。
 
-![https://cdn.llfc.club/1709014472288.jpg](https://cdn.llfc.club/1709014472288.jpg)
+![img/1709014472288.jpg](img/1709014472288.jpg)
 
 为了增加项目可读性，我们增加注释模板
 
@@ -37,12 +37,12 @@
  *****************************************************************************/
 ```
 如下图
-![https://cdn.llfc.club/1709014829278.jpg](https://cdn.llfc.club/1709014829278.jpg)
+![img/1709014829278.jpg](img/1709014829278.jpg)
 
 以后输入header custom就可以弹出注释模板了.
 
 修改mainwindow.ui属性,长宽改为300*500
-![https://cdn.llfc.club/1709017541569.jpg](https://cdn.llfc.club/1709017541569.jpg)
+![img/1709017541569.jpg](img/1709017541569.jpg)
 
 将window title 改为llfcchat
 
@@ -61,20 +61,20 @@ DESTDIR = ./bin
 ## 创建登录界面
 右键项目，选择创建，点击设计师界面类
 
-![https://cdn.llfc.club/1709018322347.jpg](https://cdn.llfc.club/1709018322347.jpg)
+![img/1709018322347.jpg](img/1709018322347.jpg)
 
 选择 dialog without buttons
 
-![https://cdn.llfc.club/1709018398183.jpg](https://cdn.llfc.club/1709018398183.jpg)
+![img/1709018398183.jpg](img/1709018398183.jpg)
 
 创建的名字就叫做LoginDialog
 
-![https://cdn.llfc.club/1709018587338.jpg](https://cdn.llfc.club/1709018587338.jpg)
+![img/1709018587338.jpg](img/1709018587338.jpg)
 
 
 将LoginDialog.ui修改为如下布局
 
-![https://cdn.llfc.club/1709019305029.jpg](https://cdn.llfc.club/1709019305029.jpg)
+![img/1709019305029.jpg](img/1709019305029.jpg)
 
 在mainwindow.h中添加LoginDialog指针成员，然后在构造函数将LoginDialog设置为中心部件
 ``` cpp
@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 注册界面创建方式和登录界面类似，我们创建的界面如下:
 
-![https://cdn.llfc.club/1709030381543.jpg](https://cdn.llfc.club/1709030381543.jpg)
+![img/1709030381543.jpg](img/1709030381543.jpg)
 
 创建好界面后接下来在LoginDialog类声明里添加信号切换注册界面
 

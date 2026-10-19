@@ -43,7 +43,7 @@ void MainWindow::SlotSwitchReset()
 ```
 ResetDialog是我们添加的界面类，新建ResetDialog界面类，界面布局如下
 
-![https://cdn.llfc.club/1712826184149.jpg](https://cdn.llfc.club/1712826184149.jpg)
+![img/1712826184149.jpg](img/1712826184149.jpg)
 
 ## 重置界面
 

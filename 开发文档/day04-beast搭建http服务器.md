@@ -496,7 +496,7 @@ LogicSystem::LogicSystem() {
 
 看到浏览器收到如下图信息，说明我们的get请求逻辑处理完了
 
-![https://cdn.llfc.club/1710148646788.jpg](https://cdn.llfc.club/1710148646788.jpg)
+![img/1710148646788.jpg](img/1710148646788.jpg)
 
 
 

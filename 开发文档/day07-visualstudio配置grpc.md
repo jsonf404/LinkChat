@@ -2,29 +2,29 @@
 
 推荐一种可复制配置的方式，视图里选择其他窗口，再选择属性管理器
 
-![https://cdn.llfc.club/1710292918199.jpg](https://cdn.llfc.club/1710292918199.jpg)
+![img/1710292918199.jpg](img/1710292918199.jpg)
 
 我们选择要配置的类型，我选择Debug 64位的配置，添加新项目属性表
 
-![https://cdn.llfc.club/2789d4d0598e69bff5f0452159d3c14.png](https://cdn.llfc.club/2789d4d0598e69bff5f0452159d3c14.png)
+![img/2789d4d0598e69bff5f0452159d3c14.png](img/2789d4d0598e69bff5f0452159d3c14.png)
 
 选择创建属性的名字
 
-![https://cdn.llfc.club/7675ab8ac46308693eec2ea4ec0f708.png](https://cdn.llfc.club/7675ab8ac46308693eec2ea4ec0f708.png)
+![img/7675ab8ac46308693eec2ea4ec0f708.png](img/7675ab8ac46308693eec2ea4ec0f708.png)
 
 接下来双击我们创建好的属性文件，将之前配置的boost和jsoncpp库属性移动到这里，把之前在项目中配置的删除。
 
 包含目录
 
-![https://cdn.llfc.club/3e98a4ba407416e8a433a7b6254c3a6.png](https://cdn.llfc.club/3e98a4ba407416e8a433a7b6254c3a6.png)
+![img/3e98a4ba407416e8a433a7b6254c3a6.png](img/3e98a4ba407416e8a433a7b6254c3a6.png)
 
 库目录
 
-![https://cdn.llfc.club/56a894eca5a6b3888ba07f29678b291.png](https://cdn.llfc.club/56a894eca5a6b3888ba07f29678b291.png)
+![img/56a894eca5a6b3888ba07f29678b291.png](img/56a894eca5a6b3888ba07f29678b291.png)
 
 链接库
 
-![https://cdn.llfc.club/43aba5606318b56dc56ba1a884c18b3.png](https://cdn.llfc.club/43aba5606318b56dc56ba1a884c18b3.png)
+![img/43aba5606318b56dc56ba1a884c18b3.png](img/43aba5606318b56dc56ba1a884c18b3.png)
 
 接下来配置grpc头文件包含目录，C++ 常规-> 附加包含目录添加如下
 
@@ -36,7 +36,7 @@ D:\cppsoft\grpc\third_party\protobuf\src
 D:\cppsoft\grpc\include
 ```
 
-![https://cdn.llfc.club/375f8c4b21f643408b73a19e415fcd5.png](https://cdn.llfc.club/375f8c4b21f643408b73a19e415fcd5.png)
+![img/375f8c4b21f643408b73a19e415fcd5.png](img/375f8c4b21f643408b73a19e415fcd5.png)
 
 接下来配置库路径, 在链接器常规选项下，点击附加库目录，添加我们需要的库目录
 ``` bash
@@ -60,7 +60,7 @@ D:\cppsoft\grpc\visualpro\Debug
 D:\cppsoft\grpc\visualpro\third_party\cares\cares\lib\Debug
 ```
 
-![https://cdn.llfc.club/89fcb7a4afef6721c893187fffcfecf.png](https://cdn.llfc.club/89fcb7a4afef6721c893187fffcfecf.png)
+![img/89fcb7a4afef6721c893187fffcfecf.png](img/89fcb7a4afef6721c893187fffcfecf.png)
 
 在链接器->输入->附加依赖项中添加
 
@@ -134,7 +134,7 @@ absl_statusor.lib
 re2.lib
 ```
 
-![https://cdn.llfc.club/1710301100655.jpg](https://cdn.llfc.club/1710301100655.jpg)
+![img/1710301100655.jpg](img/1710301100655.jpg)
 
 之后点击保存会看到项目目录下生成了PropertySheet.props文件
 
@@ -396,10 +396,6 @@ unsigned short gate_port = atoi(gate_port_str.c_str());
 ```
 
 其他地方想要获取配置信息就不需要定义了，直接包含const.h并且使用gCfgMgr即可。
-
-## 总结
-
-本节基于visual studio配置grpc，并实现了grpc客户端发送请求的逻辑。下一节实现 grpc server
 
 
 

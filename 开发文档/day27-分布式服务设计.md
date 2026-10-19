@@ -528,13 +528,4 @@ ChatServer StatusServiceImpl::getChatServer() {
 
 分别查看登录信息，发现两个客户端被分配到不同的chatserver了，说明我们实现了负载均衡的分配方式。
 
-![https://cdn.llfc.club/1722314087856.jpg](https://cdn.llfc.club/1722314087856.jpg)
-
-## 源码连接
-
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat)
-
-## 视频连接
-
-[https://www.bilibili.com/video/BV17r421K7Px/?spm_id_from=333.999.0.0&vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV17r421K7Px/?spm_id_from=333.999.0.0&vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
-
+![img/1722314087856.jpg](img/1722314087856.jpg)

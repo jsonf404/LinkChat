@@ -1,9 +1,9 @@
 ## 聊天界面整体展示
 我们先看下整体的聊天界面，方便以后逐个功能添加
-![https://cdn.llfc.club/1716523002662.jpg](https://cdn.llfc.club/1716523002662.jpg)
+![img/1716523002662.jpg](img/1716523002662.jpg)
 
 QT Designer中 ui 设计如下
-![https://cdn.llfc.club/1716528347175.jpg](https://cdn.llfc.club/1716528347175.jpg)
+![img/1716528347175.jpg](img/1716528347175.jpg)
 
 将聊天对话框分为几个部分：
 
@@ -60,7 +60,7 @@ void sig_swich_chatdlg();
 ## ChatDialog ui文件
 ui文件的结构可以参考我的源码中的结构，这里我们可以简单看下
 
-![https://cdn.llfc.club/1716603750779.jpg](https://cdn.llfc.club/1716603750779.jpg)
+![img/1716603750779.jpg](img/1716603750779.jpg)
 
 按照这个布局拖动并设置宽高即可，接下来需要设置下qss调整颜色
 

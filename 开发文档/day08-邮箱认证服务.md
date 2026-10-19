@@ -10,13 +10,13 @@ npm init
 ```
 根据提示同意会创建一个package.json文件
 
-![https://cdn.llfc.club/1710380349325.jpg](https://cdn.llfc.club/1710380349325.jpg)
+![img/1710380349325.jpg](img/1710380349325.jpg)
 
 接下来安装grpc-js包，也可以安装grpc，grpc是C++版本，grpc-js是js版本，C++版本停止维护了。所以用grpc-js版本。
 
 安装过程出现了错误，因为淘宝镜像地址过期了
 
-![https://cdn.llfc.club/1710381278285.jpg](https://cdn.llfc.club/1710381278285.jpg)
+![img/1710381278285.jpg](img/1710381278285.jpg)
 
 清除之前npm镜像地址
 
@@ -32,7 +32,7 @@ npm config set registry https://registry.npmmirror.com
 
 接着下载grpc-js就成功了
 
-![https://cdn.llfc.club/1710381922730.jpg](https://cdn.llfc.club/1710381922730.jpg)
+![img/1710381922730.jpg](img/1710381922730.jpg)
 
 接着安装proto-loader用来动态解析proto文件
 
@@ -40,7 +40,7 @@ npm config set registry https://registry.npmmirror.com
 npm install @grpc/proto-loader
 ```
 
-![https://cdn.llfc.club/1710382537391.jpg](https://cdn.llfc.club/1710382537391.jpg)
+![img/1710382537391.jpg](img/1710382537391.jpg)
 
 我们再安装email处理的库
 
@@ -82,11 +82,11 @@ oneofs: 如果为 true，则支持 Protocol Buffers 中的 oneof 特性。
 
 这里设置开启smtp服务和授权码。我这里已经是设置好的。
 
-![https://cdn.llfc.club/20210625165014232.png](https://cdn.llfc.club/20210625165014232.png)
+![img/20210625165014232.png](img/20210625165014232.png)
 
 新增一个授权码用于发邮件
 
-![https://cdn.llfc.club/20210625165014232%20%282%29.png](https://cdn.llfc.club/20210625165014232%20%282%29.png)
+![img/20210625165014232%20%282%29.png](img/20210625165014232%20%282%29.png)
 
 ## 读取配置
 

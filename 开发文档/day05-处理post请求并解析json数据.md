@@ -84,13 +84,13 @@ void HttpConnection::HandleReq() {
 
 打开postman，将请求修改为post
 
-![https://cdn.llfc.club/1710163652661.png](https://cdn.llfc.club/1710163652661.png)
+![img/1710163652661.png](img/1710163652661.png)
 
 绿色的为post请求的json参数，红色的为服务器返回的json数据包。
 
 我们看服务器打印的日志
 
-![https://cdn.llfc.club/1710164199348.jpg](https://cdn.llfc.club/1710164199348.jpg)
+![img/1710164199348.jpg](img/1710164199348.jpg)
 
 ## 客户端增加post逻辑
 我们之前在客户端实现了httpmgr的post请求，在点击获取验证码的槽函数里添加发送http的post请求即可
@@ -117,11 +117,11 @@ void RegisterDialog::on_get_code_clicked()
 ```
 当服务器不启动，客户端输入邮箱，点击获取验证码，客户端会收到网络连接失败的提示
 
-![https://cdn.llfc.club/1710209670231.jpg](https://cdn.llfc.club/1710209670231.jpg)
+![img/1710209670231.jpg](img/1710209670231.jpg)
 
 启动服务器后，再次获取验证码，就显示正确提示了，而且客户端输出了服务器回传的邮箱地址`email is  "secondtonone1@163.com"`，界面也刷新为正确显示
 
-![https://cdn.llfc.club/1710210157771.jpg](https://cdn.llfc.club/1710210157771.jpg)
+![img/1710210157771.jpg](img/1710210157771.jpg)
 
 ## 客户端配置管理
 

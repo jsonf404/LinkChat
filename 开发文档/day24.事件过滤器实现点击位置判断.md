@@ -44,11 +44,11 @@ ui->side_chat_lb->SetSelected(true);
 ## 查找结果
 在项目中添加FindSuccessDlg设计师界面类，其布局如下
 
-![https://cdn.llfc.club/1719726260598.jpg](https://cdn.llfc.club/1719726260598.jpg)
+![img/1719726260598.jpg](img/1719726260598.jpg)
 
 属性管理界面如下
 
-![https://cdn.llfc.club/1719726584051.jpg](https://cdn.llfc.club/1719726584051.jpg)
+![img/1719726584051.jpg](img/1719726584051.jpg)
 
 FindSuccessDlg声明如下
 ``` cpp
@@ -295,9 +295,3 @@ CONFIG(debug, debug | release) {
 
 win32-msvc*:QMAKE_CXXFLAGS += /wd"4819" /utf-8
 ```
-## 视频
-
-[https://www.bilibili.com/video/BV1ww4m1e72G/](https://www.bilibili.com/video/BV1ww4m1e72G/)
-
-## 源码链接
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat) 

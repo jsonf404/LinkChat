@@ -2,7 +2,7 @@
 
 今日实现界面效果
 
-![https://cdn.llfc.club/1721547194830.jpg](https://cdn.llfc.club/1721547194830.jpg)
+![img/1721547194830.jpg](img/1721547194830.jpg)
 
 ## 联系人列表
 我们自定义一个ChatUserList类，用来管理聊天列表。其声明如下：
@@ -201,7 +201,7 @@ void ContactUserList::slot_item_clicked(QListWidgetItem *item)
 
 因为每一个item都是我们自己定义的，所以我们添加设计师界面类，界面布局如下所示
 
-![https://cdn.llfc.club/1721544014771.jpg](https://cdn.llfc.club/1721544014771.jpg)
+![img/1721544014771.jpg](img/1721544014771.jpg)
 
 类的声明如下
 ``` cpp
@@ -300,7 +300,7 @@ void ConUserItem::ShowRedPoint(bool show)
 
 申请页面ui布局如下
 
-![https://cdn.llfc.club/1721545292540.jpg](https://cdn.llfc.club/1721545292540.jpg)
+![img/1721545292540.jpg](img/1721545292540.jpg)
 
 我们新增ApplyFriendPage类，用来显示申请列表
 ``` cpp
@@ -450,7 +450,7 @@ void ApplyFriendPage::slot_auth_rsp(std::shared_ptr<AuthRsp> auth_rsp)
 
 界面布局
 
-![https://cdn.llfc.club/1721546273709.jpg](https://cdn.llfc.club/1721546273709.jpg)
+![img/1721546273709.jpg](img/1721546273709.jpg)
 
 类的声明如下：
 ``` cpp
@@ -706,9 +706,3 @@ ApplyFriendItem #addBtn[state='press'] {
     font-family: "Microsoft YaHei";
 }
 ```
-
-## 源码连接
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat) 
-
-## 视频连接
-[https://www.bilibili.com/video/BV1SS42197Yo/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV1SS42197Yo/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)

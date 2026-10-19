@@ -130,15 +130,15 @@ RegPost("/user_register", [](std::shared_ptr<HttpConnection> connection) {
 
 选择window版本，点击下载按钮，如下所示
 
-![https://cdn.llfc.club/4aa44fdafe578d8f2626d3e280d608f.png](https://cdn.llfc.club/4aa44fdafe578d8f2626d3e280d608f.png)
+![img/4aa44fdafe578d8f2626d3e280d608f.png](img/4aa44fdafe578d8f2626d3e280d608f.png)
 
 不用登录直接下载
 
-![https://cdn.llfc.club/1711349001944.jpg](https://cdn.llfc.club/1711349001944.jpg)
+![img/1711349001944.jpg](img/1711349001944.jpg)
 
 下载好mysql安装包后，将其解压到指定目录，并记下解压的目录，后续用于环境变量配置
 
-![https://cdn.llfc.club/1711349518362.jpg](https://cdn.llfc.club/1711349518362.jpg)
+![img/1711349518362.jpg](img/1711349518362.jpg)
 
 在bin目录同级下创建一个文件，命名为my.ini
 编辑my.ini文件
@@ -177,7 +177,7 @@ B、datadir这里设置mysql数据库的数据存放目录
 
 打开cmd进入mysql的bin文件下
 
-![https://cdn.llfc.club/1711349826275.jpg](https://cdn.llfc.club/1711349826275.jpg)
+![img/1711349826275.jpg](img/1711349826275.jpg)
 
 依次执行命令
 
@@ -189,7 +189,7 @@ B、datadir这里设置mysql数据库的数据存放目录
 ```
 如下图，随机密码要记住，以后我们改密码会用到
 
-![https://cdn.llfc.club/83635680847f591980ade3501655f8d.png](https://cdn.llfc.club/83635680847f591980ade3501655f8d.png)
+![img/83635680847f591980ade3501655f8d.png](img/83635680847f591980ade3501655f8d.png)
 
 接下来在cmd执行第二条命令
 
@@ -200,11 +200,11 @@ B、datadir这里设置mysql数据库的数据存放目录
 
 如果出现以下情况，说明cmd不是以管理员形式执行的，改用为管理员权限执行即可。
 
-![https://cdn.llfc.club/2872369cb66fa7803e19575be3cd63b.png](https://cdn.llfc.club/2872369cb66fa7803e19575be3cd63b.png)
+![img/2872369cb66fa7803e19575be3cd63b.png](img/2872369cb66fa7803e19575be3cd63b.png)
 
 成功如下
 
-![https://cdn.llfc.club/87a224f42f4dccb254481470d2f1b8e.png](https://cdn.llfc.club/87a224f42f4dccb254481470d2f1b8e.png)
+![img/87a224f42f4dccb254481470d2f1b8e.png](img/87a224f42f4dccb254481470d2f1b8e.png)
 
 目前为止安装完毕，大家如果mysql官网下载缓慢，可以去我的网盘下载
 
@@ -218,15 +218,15 @@ B、datadir这里设置mysql数据库的数据存放目录
 
 点击桌面我的电脑，右键选择管理进去：
 
-![https://cdn.llfc.club/1711350803255.jpg](https://cdn.llfc.club/1711350803255.jpg)
+![img/1711350803255.jpg](img/1711350803255.jpg)
 
 点击后选择服务
 
-![https://cdn.llfc.club/1711350871137.jpg](https://cdn.llfc.club/1711350871137.jpg)
+![img/1711350871137.jpg](img/1711350871137.jpg)
 
 点击服务后可查看当前计算机启动的所有服务，找到mysql，然后右键点击设为启动，同时也可设置其为自动启动和手动启动
 
-![https://cdn.llfc.club/1711350989964.jpg](https://cdn.llfc.club/1711350989964.jpg)
+![img/1711350989964.jpg](img/1711350989964.jpg)
 
 继续在cmd上执行以下命令
 
@@ -236,7 +236,7 @@ mysql -uroot -p
 
 回车后输入上面安装时保存的初始密码，进入mysql里面：
 
-![https://cdn.llfc.club/b33134d93210412a6d301c9eedfa8a5.png](https://cdn.llfc.club/b33134d93210412a6d301c9eedfa8a5.png)
+![img/b33134d93210412a6d301c9eedfa8a5.png](img/b33134d93210412a6d301c9eedfa8a5.png)
 
 在mysql里面继续执行以下命令：
 
@@ -257,13 +257,13 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
 
 变量值：msql目录
 
-![https://cdn.llfc.club/1711352568377.jpg](https://cdn.llfc.club/1711352568377.jpg)
+![img/1711352568377.jpg](img/1711352568377.jpg)
 
 修改系统的path变量
 
 编辑path，进去后添加 %MYSQL_HOME%\bin
 
-![https://cdn.llfc.club/1711352718673.jpg](https://cdn.llfc.club/1711352718673.jpg)
+![img/1711352718673.jpg](img/1711352718673.jpg)
 
 ## 测试连接
 
@@ -281,7 +281,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
 
 效果如下：
 
-![https://cdn.llfc.club/1711531330919.jpg](https://cdn.llfc.club/1711531330919.jpg)
+![img/1711531330919.jpg](img/1711531330919.jpg)
 
 ## Docker环境配置mysql
 
@@ -373,27 +373,27 @@ Passwd = 123456
 
 提取码：9c1w 
 
-![https://cdn.llfc.club/1711692126532.jpg](https://cdn.llfc.club/1711692126532.jpg)
+![img/1711692126532.jpg](img/1711692126532.jpg)
 
 下载后将文件夹解压放在一个自己常用的目录，我放在`D:\cppsoft\mysql_connector`
 
-![https://cdn.llfc.club/1711692478215.jpg](https://cdn.llfc.club/1711692478215.jpg)
+![img/1711692478215.jpg](img/1711692478215.jpg)
 
 接下来去visual studio中配置项目
 
 VC++ 包含目录添加`D:\cppsoft\mysql_connector\include`
 
-![https://cdn.llfc.club/1711692778937.jpg](https://cdn.llfc.club/1711692778937.jpg)
+![img/1711692778937.jpg](img/1711692778937.jpg)
 
 库目录包含`D:\cppsoft\mysql_connector\lib64\vs14`
 
-![https://cdn.llfc.club/1711693069494.jpg](https://cdn.llfc.club/1711693069494.jpg)
+![img/1711693069494.jpg](img/1711693069494.jpg)
 
 然后将`D:\cppsoft\mysql_connector\lib64\debug`下的mysqlcppconn8-2-vs14.dll和mysqlcppconn9-vs14.dll分别拷贝到项目中
 
 为了让项目自动将dll拷贝到运行目录，可以在生成事件->生成后事件中添加xcopy命令
 
-![https://cdn.llfc.club/1711693404656.jpg](https://cdn.llfc.club/1711693404656.jpg)
+![img/1711693404656.jpg](img/1711693404656.jpg)
 
 ``` bash
 xcopy $(ProjectDir)config.ini  $(SolutionDir)$(Platform)\$(Configuration)\   /y
@@ -541,14 +541,14 @@ int MysqlDao::RegUser(const std::string& name, const std::string& email, const s
 ```
 新建数据库llfc， llfc数据库添加user表和user_id表
 
-![https://cdn.llfc.club/1712109915609.jpg](https://cdn.llfc.club/1712109915609.jpg)
+![img/1712109915609.jpg](img/1712109915609.jpg)
 
 user表
-![https://cdn.llfc.club/1712109796859.jpg](https://cdn.llfc.club/1712109796859.jpg)
+![img/1712109796859.jpg](img/1712109796859.jpg)
 
 user_id就一行数据，用来记录用户id
 
-![https://cdn.llfc.club/1712110047125.jpg](https://cdn.llfc.club/1712110047125.jpg)
+![img/1712110047125.jpg](img/1712110047125.jpg)
 
 这里id用简单计数表示，不考虑以后合服务器和分表分库，如果考虑大家可以采取不同的策略，雪花算法等。
 

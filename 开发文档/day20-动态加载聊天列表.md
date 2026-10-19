@@ -64,22 +64,22 @@ void ChatDialog::slot_loading_chat_user()
 ```
 槽函数中我们添加了LoadingDlg类，这个类也是个QT 设计师界面类，ui如下
 
-![https://cdn.llfc.club/1717637779912.jpg](https://cdn.llfc.club/1717637779912.jpg)
+![img/1717637779912.jpg](img/1717637779912.jpg)
 
 ## 添加stackwidget管理界面
 ChatDialog界面里添加stackedWidget，然后添加两个页面
 
-![https://cdn.llfc.club/1717639561119.jpg](https://cdn.llfc.club/1717639561119.jpg)
+![img/1717639561119.jpg](img/1717639561119.jpg)
 
 回头我们将这两个界面升级为我们自定义的界面
 
 我们先添加一个自定义的QT设计师界面类ChatPage,然后将原来放在ChatDialog.ui中的chat_data_wid这个widget移动到ChatPage中ui布局如下
 
-![https://cdn.llfc.club/1717640323397.jpg](https://cdn.llfc.club/1717640323397.jpg)
+![img/1717640323397.jpg](img/1717640323397.jpg)
 
 布局属性如下
 
-![https://cdn.llfc.club/1717640426705.jpg](https://cdn.llfc.club/1717640426705.jpg)
+![img/1717640426705.jpg](img/1717640426705.jpg)
 
 然后我们将ChatDialog.ui中的chat_page 升级为ChatPage。
 
@@ -87,7 +87,7 @@ ChatDialog界面里添加stackedWidget，然后添加两个页面
 
 如下图：
 
-![https://cdn.llfc.club/1717644080174.jpg](https://cdn.llfc.club/1717644080174.jpg)
+![img/1717644080174.jpg](img/1717644080174.jpg)
 
 然后我们在ChatPage的构造函数中添加按钮样式的编写
 ``` cpp
@@ -299,12 +299,4 @@ LoadingDlg{
 
 最后整体运行一下看看效果, 下一节我们实现红框内的内容
 
-![https://cdn.llfc.club/1717645209118.jpg](https://cdn.llfc.club/1717645209118.jpg)
-
-## 视频链接
-
-[https://www.bilibili.com/video/BV1xz421h7Ad/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV1xz421h7Ad/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
-
-## 源码链接
-
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat)
+![img/1717645209118.jpg](img/1717645209118.jpg)

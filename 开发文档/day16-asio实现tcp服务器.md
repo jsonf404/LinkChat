@@ -333,6 +333,3 @@ LogicSystem::LogicSystem():_b_stop(false){
 }
 ```
 
-## 总结
-到此，完成了ChatServer收到QT客户端发送过来的长链接请求，并解析读取的数据，将收到的数据通过tcp发送给对端。接下来还要做ChatServer到GateServer的token验证，判断是否合理，这个教给之后的文章处理。
-

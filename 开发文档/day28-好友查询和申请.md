@@ -133,7 +133,7 @@ void SearchList::slot_user_search(std::shared_ptr<SearchInfo> si)
 ```
 FindSuccessDlg是找到的结果展示，FindFailDlg是未找到结果展示。以下为FindSuccessDlg的ui布局
 
-![https://cdn.llfc.club/1722655438089.jpg](https://cdn.llfc.club/1722655438089.jpg)
+![img/1722655438089.jpg](img/1722655438089.jpg)
 
 具体声明如下
 ``` cpp
@@ -248,7 +248,7 @@ void LogicSystem::SearchInfo(std::shared_ptr<CSession> session, const short& msg
 
 如下图，Client1想和Client2以及Client3分别通信，需要先将请求发给Client1所在的Server1，再考虑是否rpc调用。
 
-![https://cdn.llfc.club/1722844689701.jpg](https://cdn.llfc.club/1722844689701.jpg)
+![img/1722844689701.jpg](img/1722844689701.jpg)
 
 客户端在ApplySure槽函数中添加好友请求
 
@@ -581,7 +581,7 @@ void ApplyFriendPage::AddNewApply(std::shared_ptr<AddFriendApply> apply)
 ```
 测试效果, 收到对方请求后如下图
 
-![https://cdn.llfc.club/1722851642815.jpg](https://cdn.llfc.club/1722851642815.jpg)
+![img/1722851642815.jpg](img/1722851642815.jpg)
 
 ## 登录加载申请
 当用户登录后，服务器需要将申请列表同步给客户端, 写在登录逻辑里。
@@ -663,7 +663,7 @@ bool MysqlDao::GetApplyList(int touid, std::vector<std::shared_ptr<ApplyInfo>>& 
 ## 好友认证界面
 客户端需要实现好友认证界面，当点击同意对方好友申请后，弹出认证信息，点击确定后将认证同意的请求发给服务器，服务器再通知申请方，告知对方被申请人已经同意加好友了。认证界面和申请界面类似, 这个大家自己实现即可。
 
-![https://cdn.llfc.club/1722854446243.jpg](https://cdn.llfc.club/1722854446243.jpg)
+![img/1722854446243.jpg](img/1722854446243.jpg)
 
 认证界面的函数和逻辑可以照抄申请好友的逻辑。
 
@@ -1104,10 +1104,3 @@ void AuthenFriend::SlotApplyCancel()
     deleteLater();
 }
 ```
-## 源码连接
-
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat)
-
-## 视频连接
-
-[https://www.bilibili.com/video/BV1Ex4y1s7cq/](https://www.bilibili.com/video/BV1Ex4y1s7cq/)

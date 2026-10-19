@@ -1,13 +1,11 @@
 ## 客户端登录功能
 登录界面新增err_tip，用来提示用户登陆结果。至于密码输入框大家可以根据注册界面的逻辑实现隐藏和显示的功能。这里留给大家自己实现。
 
-![https://cdn.llfc.club/1713228480446.jpg](https://cdn.llfc.club/1713228480446.jpg)
-
 点击登录需要发送http 请求到GateServer，GateServer先验证登录密码，再调用grpc请求给StatusServer，获取聊天服务器ip信息和token信息反馈给客户端。
 
 结构图如下
 
-![https://cdn.llfc.club/1713230325540.jpg](https://cdn.llfc.club/1713230325540.jpg)
+![img/1713230325540.jpg](img/1713230325540.jpg)
 
 我们先实现客户端登录,为登录按钮添加槽函数响应
 
@@ -296,7 +294,7 @@ D:\cppsoft\grpc\visualpro\third_party\protobuf\Debug\protoc.exe  -I="." --grpc_o
 ```
 这俩命令执行完成后总计生成四个文件
 
-![https://cdn.llfc.club/1713239066360.jpg](https://cdn.llfc.club/1713239066360.jpg)
+![img/1713239066360.jpg](img/1713239066360.jpg)
 
 实现StatusGrpcClient
 ``` cpp
@@ -611,8 +609,3 @@ StatusServiceImpl::StatusServiceImpl():_server_index(0)
 }
 ```
 其余的文件为了保持复用，我们不重复开发，将GateServer中的RedisMgr,MysqlMgr,Singleton,IOSerivePool等统统拷贝过来并添加到项目中。
-
-## 联调测试
-我们启动StatusServer，GateServer以及QT客户端，输入密码和用户名，点击登陆，会看到前端收到登陆成功的消息
-
-![https://cdn.llfc.club/1713248019373.jpg](https://cdn.llfc.club/1713248019373.jpg)

@@ -2,7 +2,7 @@
 我们的聊天布局如下图
 最外层的是一个chatview（黑色）， chatview内部在添加一个MainLayout（蓝色），MainLayout内部添加一个scrollarea(红色)，scrollarea内部包含一个widget（绿色），同时也包含一个HLayout（紫色）用来浮动显示滚动条。widget内部包含一个垂直布局Vlayout(黄色),黄色布局内部包含一个粉色的widget，widget占据拉伸比一万，保证充满整个布局。
 
-![https://cdn.llfc.club/layoutpic.png](https://cdn.llfc.club/layoutpic.png)
+![img/layoutpic.png](img/layoutpic.png)
 
 ## 代码实现
 
@@ -122,10 +122,3 @@ void ChatView::onVScrollBarMoved(int min, int max)
     }
 }
 ```
-本节先到这里，完成聊天布局基本的构造
-
-## 视频链接
-[https://www.bilibili.com/video/BV1xz421h7Ad/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV1xz421h7Ad/?vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
-
-## 源码链接
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat)

@@ -7,11 +7,11 @@ boost官网地址：
 
 Boost库官网[https://www.boost.org/](https://www.boost.org/)，首先进入官网下载对应的Boost库文件。点击下图所示红框中Download进入下载页面。更多版本点击链接下载。
 
-![https://cdn.llfc.club/1709188088318.jpg](https://cdn.llfc.club/1709188088318.jpg)
+![img/1709188088318.jpg](img/1709188088318.jpg)
 
 点击进入页面后，接下来选择7z或者zip文件都可以。
 
-![https://cdn.llfc.club/1709188365491.jpg](https://cdn.llfc.club/1709188365491.jpg)
+![img/1709188365491.jpg](img/1709188365491.jpg)
 
 如果下载缓慢，大家可以去我的网盘下载
 链接：[https://pan.baidu.com/s/1Uf-7gZxWpCOl7dnYzlYRHg?pwd=xt01](https://pan.baidu.com/s/1Uf-7gZxWpCOl7dnYzlYRHg?pwd=xt01) 
@@ -22,7 +22,7 @@ Boost库官网[https://www.boost.org/](https://www.boost.org/)，首先进入官
 
 下载好后解压, 其中booststrap.bat点击后生成编译程序
 
-![https://cdn.llfc.club/1709189119436.jpg](https://cdn.llfc.club/1709189119436.jpg)
+![img/1709189119436.jpg](img/1709189119436.jpg)
 
 点击后，生成b2.exe，我们执行如下命令
 
@@ -46,15 +46,15 @@ Boost库官网[https://www.boost.org/](https://www.boost.org/)，首先进入官
 
 下面是编译界面
 
-![https://cdn.llfc.club/1709190169393.jpg](https://cdn.llfc.club/1709190169393.jpg)
+![img/1709190169393.jpg](img/1709190169393.jpg)
 
 编译后生成如下目录和文件, 我的是D盘 cppsoft目录下的boost文件夹，大家可以根据自己的设置去指定文件夹查看。
 
-![https://cdn.llfc.club/1709192144529.jpg](https://cdn.llfc.club/1709192144529.jpg)
+![img/1709192144529.jpg](img/1709192144529.jpg)
 
 为了兼容我之前做的旧项目，我创建了一个stage文件夹，将lib文件夹和内容移动到stage中了。然后将include文件夹下的boost文件夹移出到boost_1_81_0目录下，整体看就就是如下
 
-![https://cdn.llfc.club/1709192797632.jpg](https://cdn.llfc.club/1709192797632.jpg)
+![img/1709192797632.jpg](img/1709192797632.jpg)
 
 接下来我们创建项目并配置boost
 
@@ -62,15 +62,15 @@ Boost库官网[https://www.boost.org/](https://www.boost.org/)，首先进入官
 
 打开visual studio 创建项目 
 
-![https://cdn.llfc.club/1709193315698.jpg](https://cdn.llfc.club/1709193315698.jpg)
+![img/1709193315698.jpg](img/1709193315698.jpg)
 
 接下来配置boost到项目中,右键项目选择属性，配置VC++包含目录，添加`D:\cppsoft\boost_1_81_0`（根据你自己的boost目录配置）
 
-![https://cdn.llfc.club/1709193680525.jpg](https://cdn.llfc.club/1709193680525.jpg)
+![img/1709193680525.jpg](img/1709193680525.jpg)
 
 再配置VC++库目录, 添加`D:\cppsoft\boost_1_81_0\stage\lib`
 
-![https://cdn.llfc.club/1709194005921.jpg](https://cdn.llfc.club/1709194005921.jpg)
+![img/1709194005921.jpg](img/1709194005921.jpg)
 
 写个代码测试一下
 
@@ -96,7 +96,7 @@ int main()
 ```
 运行成功，可以看到弹出了窗口
 
-![https://cdn.llfc.club/1675233803676.jpg](https://cdn.llfc.club/1675233803676.jpg)
+![img/1675233803676.jpg](img/1675233803676.jpg)
 
 ## 配置jsoncpp
 
@@ -114,39 +114,39 @@ jsoncpp下载地址：
 
 验证码ng6x
 下载后我们解压文件夹，解压后文件夹如下图
-![https://cdn.llfc.club/1684638346874.jpg](https://cdn.llfc.club/1684638346874.jpg)
+![img/1684638346874.jpg](img/1684638346874.jpg)
 
 然后进行编译，编译需要进入makefile文件夹下
 
-![https://cdn.llfc.club/1684638830012.jpg](https://cdn.llfc.club/1684638830012.jpg)
+![img/1684638830012.jpg](img/1684638830012.jpg)
 
 找到jsoncpp.sln文件，用visual studio打开，因为我的是visual studio2019版本，所以会提示我升级。
 
-![https://cdn.llfc.club/1684638950615.jpg](https://cdn.llfc.club/1684638950615.jpg)
+![img/1684638950615.jpg](img/1684638950615.jpg)
 
 
 点击确定升级，之后我们选择编译lib_json即可，当然偷懒可以选择编译整个解决方案。
-![https://cdn.llfc.club/1684639169065.jpg](https://cdn.llfc.club/1684639169065.jpg)
+![img/1684639169065.jpg](img/1684639169065.jpg)
 
 然后我们配置编译属性，我想要用x64位的，所以配置编译平台为X64位，编译模式为debug模式，大家最好把release版和debug版都编译一遍。
 
 右键lib_json属性里选择C++，再选择代码生成，之后在右侧选择运行库，选择md(release版), mdd(debug版).
 
-![https://cdn.llfc.club/1709197886189.jpg](https://cdn.llfc.club/1709197886189.jpg)
+![img/1709197886189.jpg](img/1709197886189.jpg)
 
 
 编译生成后，我们的json库生成在项目同级目录的x64文件夹下的debug目录下
-![https://cdn.llfc.club/1684640251160.jpg](https://cdn.llfc.club/1684640251160.jpg)
+![img/1684640251160.jpg](img/1684640251160.jpg)
 
 接下来我们在D盘cppsoft新建一个文件夹libjson，然后在其内部分别建立include和lib文件夹
 
-![https://cdn.llfc.club/1684640531206.jpg](https://cdn.llfc.club/1684640531206.jpg)
+![img/1684640531206.jpg](img/1684640531206.jpg)
 
 将jsoncpp-src-0.5.0源码文件夹下include文件夹里的内容copy到libjson下的include文件夹内。
 
 将jsoncpp-src-0.5.0源码文件夹下x64位debug文件夹和Release文件夹下生成的库copy到libjson下的lib文件夹内。
 
-![https://cdn.llfc.club/1709198276119.jpg](https://cdn.llfc.club/1709198276119.jpg)
+![img/1709198276119.jpg](img/1709198276119.jpg)
 
 我们生成的是mdd和md版本的库，但是名字却是mt，这个是visual studio生成的小bug先不管了。
 
@@ -156,11 +156,11 @@ jsoncpp下载地址：
 
 库目录选择为 VC++库目录设置为 D:\cppsoft\libjson\lib
 
-![https://cdn.llfc.club/1684641520042.jpg](https://cdn.llfc.club/1684641520042.jpg)
+![img/1684641520042.jpg](img/1684641520042.jpg)
 
 另外我们还要设置链接器->输入->附加依赖项里设置json_vc71_libmtd.lib
 
-![https://cdn.llfc.club/1684641902273.jpg](https://cdn.llfc.club/1684641902273.jpg)
+![img/1684641902273.jpg](img/1684641902273.jpg)
 
 我们写个程序测试一下json库安装的情况
 ``` cpp
@@ -188,6 +188,6 @@ int main()
 
 输出如下
 
-![https://cdn.llfc.club/1684642765063.jpg](https://cdn.llfc.club/1684642765063.jpg)
+![img/1684642765063.jpg](img/1684642765063.jpg)
 
 

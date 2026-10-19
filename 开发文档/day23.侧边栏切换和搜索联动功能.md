@@ -276,7 +276,7 @@ void StateWidget::leaveEvent(QEvent *event)
 
 回到ChatDialog.ui中，将side_chat_lb改为StateWidget，side_contact_lb改为StateWidget。
 
-![https://cdn.llfc.club/1719028635439.jpg](https://cdn.llfc.club/1719028635439.jpg)
+![img/1719028635439.jpg](img/1719028635439.jpg)
 
 接下来回到ChatDialog.cpp中构造函数中添加
 ``` cpp
@@ -538,11 +538,4 @@ void ChatDialog::slot_text_changed(const QString &str)
 
 再次启动后在输入框输入文字，就会显示搜索框
 
-![https://cdn.llfc.club/1719113143252.jpg](https://cdn.llfc.club/1719113143252.jpg)
-
-## 视频
-
-[https://www.bilibili.com/video/BV1uM4m1U7MP/?spm_id_from=333.999.0.0&vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9](https://www.bilibili.com/video/BV1uM4m1U7MP/?spm_id_from=333.999.0.0&vd_source=8be9e83424c2ed2c9b2a3ed1d01385e9)
-
-## 源码链接
-[https://gitee.com/secondtonone1/llfcchat](https://gitee.com/secondtonone1/llfcchat) 
+![img/1719113143252.jpg](img/1719113143252.jpg)
