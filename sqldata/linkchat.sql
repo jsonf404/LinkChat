@@ -1,25 +1,7 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : llfcmysql
- Source Server Type    : MySQL
- Source Server Version : 80027 (8.0.27)
- Source Host           : 81.68.86.146:3308
- Source Schema         : llfc
-
- Target Server Type    : MySQL
- Target Server Version : 80027 (8.0.27)
- File Encoding         : 65001
-
- Date: 03/08/2024 19:53:45
-*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- ----------------------------
--- Table structure for friend
--- ----------------------------
 DROP TABLE IF EXISTS `friend`;
 CREATE TABLE `friend`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -42,9 +24,6 @@ INSERT INTO `friend` VALUES (64, 1050, 1012, '');
 INSERT INTO `friend` VALUES (81, 1002, 1019, 'zack');
 INSERT INTO `friend` VALUES (82, 1019, 1002, '');
 
--- ----------------------------
--- Table structure for friend_apply
--- ----------------------------
 DROP TABLE IF EXISTS `friend_apply`;
 CREATE TABLE `friend_apply`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
@@ -55,18 +34,12 @@ CREATE TABLE `friend_apply`  (
   UNIQUE INDEX `from_to_uid`(`from_uid` ASC, `to_uid` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 68 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Records of friend_apply
--- ----------------------------
 INSERT INTO `friend_apply` VALUES (6, 1023, 1002, 0);
 INSERT INTO `friend_apply` VALUES (49, 1054, 1055, 1);
 INSERT INTO `friend_apply` VALUES (52, 1056, 1012, 0);
 INSERT INTO `friend_apply` VALUES (63, 1019, 1002, 1);
 INSERT INTO `friend_apply` VALUES (64, 1032, 1035, 0);
 
--- ----------------------------
--- Table structure for user
--- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -122,23 +95,15 @@ INSERT INTO `user` VALUES (57, 1055, 'ocz', 'q3175614975@163.com', '745230', 'oc
 INSERT INTO `user` VALUES (58, 1056, 'test28', '1669475972@qq.com', '230745', 'test28', '', 0, ':/res/head_1.jpg');
 INSERT INTO `user` VALUES (60, 1058, 'NoOne', '1764850358@qq.com', '745230', '', '', 0, '');
 
--- ----------------------------
--- Table structure for user_id
--- ----------------------------
+
 DROP TABLE IF EXISTS `user_id`;
 CREATE TABLE `user_id`  (
   `id` int NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
--- ----------------------------
--- Records of user_id
--- ----------------------------
 INSERT INTO `user_id` VALUES (1058);
 
--- ----------------------------
--- Procedure structure for reg_user
--- ----------------------------
 DROP PROCEDURE IF EXISTS `reg_user`;
 delimiter ;;
 CREATE PROCEDURE `reg_user`(IN `new_name` VARCHAR(255), 
