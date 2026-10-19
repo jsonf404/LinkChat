@@ -1,20 +1,12 @@
 # C++全栈即时通讯项目
 
-> 本项目为**C++全栈聊天项目实战**，包括PC端QT界面编程，asio异步服务器设计，boost网络库搭建http网关，node.js搭建验证服务，各服务间用grpc通信，server和client用asio通信等，也包括用户信息的录入等。实现跨平台设计，先设计windows的server，之后再考虑移植到windows中。较为全面的展示C++ 在实际项目中的应用，可作为项目实践学习案例，也可写在简历中。
+> **项目描述：**一个全栈即时通讯系统，采用C/S架构。客户端基于Qt5实现，服务端采用微服务分布式架构
 
 
 
 ## 技术栈
 
-C++、boost::asio、protobuf、MySQL
-
-
-
-
-
-
-
-
+**技 术 栈：**C++、Boost.Asio、gRPC、Redis、MySQL、Qt5、llama.cpp、GTest、Benchmark，多线程/异步编程，分布式系统设计
 
 
 
