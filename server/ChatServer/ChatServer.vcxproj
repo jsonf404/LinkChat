@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AsioIOServicePool.cpp" />
+    <ClCompile Include="AiChatClient.cpp" />
     <ClCompile Include="ChatGrpcClient.cpp" />
     <ClCompile Include="ChatServer.cpp" />
     <ClCompile Include="ChatServiceImpl.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AsioIOServicePool.h" />
+    <ClInclude Include="AiChatClient.h" />
     <ClInclude Include="ChatGrpcClient.h" />
     <ClInclude Include="ChatServiceImpl.h" />
     <ClInclude Include="ConfigMgr.h" />

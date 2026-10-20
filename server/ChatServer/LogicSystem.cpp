@@ -5,6 +5,10 @@
 #include "RedisMgr.h"
 #include "UserMgr.h"
 #include "ChatGrpcClient.h"
+#include "AiChatClient.h"
+#include <chrono>
+#include <algorithm>
+#include <cstdlib>
 
 using namespace std;
 
@@ -14,13 +18,22 @@ LogicSystem::LogicSystem():_b_stop(false){
 }
 
 LogicSystem::~LogicSystem(){
-	_b_stop = true;
-	_consume.notify_one();
-	_worker_thread.join();
+    Stop();
 }
 
+void LogicSystem::Stop() {
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
+        _b_stop = true;
+    }
+    _consume.notify_one();
+    if (_worker_thread.joinable()) _worker_thread.join();
+    std::unique_lock<std::mutex> lock(_ai_task_mutex);
+    _ai_task_done.wait(lock, [this]() { return _active_ai_tasks == 0; });
+}
 void LogicSystem::PostMsgToQue(shared_ptr < LogicNode> msg) {
 	std::unique_lock<std::mutex> unique_lk(_mutex);
+	if (_b_stop) return;
 	_msg_que.push(msg);
 	//由0变为1则发送通知信号
 	if (_msg_que.size() == 1) {
@@ -134,6 +147,13 @@ void LogicSystem::LoginHandler(shared_ptr<CSession> session, const short &msg_id
 	rtvalue["desc"] = user_info->desc;
 	rtvalue["sex"] = user_info->sex;
 	rtvalue["icon"] = user_info->icon;
+    auto ai_config = ConfigMgr::Inst()["AI"];
+    const bool ai_enabled = !(ai_config["Enabled"] == "false" || ai_config["Enabled"] == "0");
+    rtvalue["ai_enabled"] = ai_enabled;
+    rtvalue["ai_uid"] = ai_config["Uid"].empty() ? 900000001 : std::atoi(ai_config["Uid"].c_str());
+    rtvalue["ai_name"] = ai_config["Name"].empty() ? "QwenBot" : ai_config["Name"];
+    rtvalue["ai_nick"] = ai_config["Nick"].empty() ? "Qwen AI" : ai_config["Nick"];
+    rtvalue["ai_icon"] = ai_config["Icon"].empty() ? ":/res/head_1.jpg" : ai_config["Icon"];
 
 	//从数据库获取申请列表
 	std::vector<std::shared_ptr<ApplyInfo>> apply_list;
@@ -384,71 +404,104 @@ void LogicSystem::AuthFriendApply(std::shared_ptr<CSession> session, const short
 }
 
 void LogicSystem::DealChatTextMsg(std::shared_ptr<CSession> session, const short& msg_id, const string& msg_data) {
-	Json::Reader reader;
-	Json::Value root;
-	reader.parse(msg_data, root);
-
-	auto uid = root["fromuid"].asInt();
-	auto touid = root["touid"].asInt();
-
-	const Json::Value  arrays = root["text_array"];
-	
-	Json::Value  rtvalue;
-	rtvalue["error"] = ErrorCodes::Success;
-	rtvalue["text_array"] = arrays;
-	rtvalue["fromuid"] = uid;
-	rtvalue["touid"] = touid;
-
-	Defer defer([this, &rtvalue, session]() {
-		std::string return_str = rtvalue.toStyledString();
-		session->Send(return_str, ID_TEXT_CHAT_MSG_RSP);
-		});
-
-
-	//查询redis 查找touid对应的server ip
-	auto to_str = std::to_string(touid);
-	auto to_ip_key = USERIPPREFIX + to_str;
-	std::string to_ip_value = "";
-	bool b_ip = RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value);
-	if (!b_ip) {
-		return;
-	}
-
-	auto& cfg = ConfigMgr::Inst();
-	auto self_name = cfg["SelfServer"]["Name"];
-	//直接通知对方有认证通过消息
-	if (to_ip_value == self_name) {
-		auto session = UserMgr::GetInstance()->GetSession(touid);
-		if (session) {
-			//在内存中则直接发送通知对方
-			std::string return_str = rtvalue.toStyledString();
-			session->Send(return_str, ID_NOTIFY_TEXT_CHAT_MSG_REQ);
-		}
-
-		return ;
-	}
-
-
-	TextChatMsgReq text_msg_req;
-	text_msg_req.set_fromuid(uid);
-	text_msg_req.set_touid(touid);
-	for (const auto& txt_obj : arrays) {
-		auto content = txt_obj["content"].asString();
-		auto msgid = txt_obj["msgid"].asString();
-		std::cout << "content is " << content << std::endl;
-		std::cout << "msgid is " << msgid << std::endl;
-		auto *text_msg = text_msg_req.add_textmsgs();
-		text_msg->set_msgid(msgid);
-		text_msg->set_msgcontent(content);
-	}
-
-
-	//发送通知 todo...
-	ChatGrpcClient::GetInstance()->NotifyTextChatMsg(to_ip_value, text_msg_req, rtvalue);
+    Json::Reader reader; Json::Value root; if (!reader.parse(msg_data, root)) return;
+    const int uid = root["fromuid"].asInt(); const int touid = root["touid"].asInt(); const Json::Value arrays = root["text_array"];
+    Json::Value ack; ack["error"] = ErrorCodes::Success; ack["text_array"] = arrays; ack["fromuid"] = uid; ack["touid"] = touid;
+    session->Send(ack.toStyledString(), ID_TEXT_CHAT_MSG_RSP);
+    auto& cfg = ConfigMgr::Inst(); auto ai = cfg["AI"];
+    const int ai_uid = ai["Uid"].empty() ? 900000001 : std::atoi(ai["Uid"].c_str());
+    const bool ai_enabled = !(ai["Enabled"] == "false" || ai["Enabled"] == "0");
+    if (ai_enabled && touid == ai_uid) {
+        std::string prompt;
+        for (const auto& item : arrays) { if (!prompt.empty()) prompt += "\n"; prompt += item["content"].asString(); }
+        if (prompt.empty()) return;
+        auto self = session;
+        {
+            std::lock_guard<std::mutex> lock(_ai_task_mutex);
+            ++_active_ai_tasks;
+        }
+        try {
+            std::thread([this, self, uid, ai_uid, prompt, ai]() mutable {
+                Defer task_done([this]() {
+                    std::lock_guard<std::mutex> lock(_ai_task_mutex);
+                    --_active_ai_tasks;
+                    _ai_task_done.notify_all();
+                });
+                try {
+                    const std::string key = "ai:conversation:" + std::to_string(uid);
+                    std::vector<std::string> stored;
+                    RedisMgr::GetInstance()->LRange(key, 0, -1, stored);
+                    std::vector<std::pair<std::string, std::string>> messages;
+                    for (const auto& raw : stored) {
+                        Json::Value item; Json::Reader history_reader;
+                        if (history_reader.parse(raw, item) && item["role"].isString())
+                            messages.push_back(std::make_pair(item["role"].asString(), item["content"].asString()));
+                    }
+                    messages.push_back(std::make_pair(std::string("user"), prompt));
+                    const int turns = ai["HistoryTurns"].empty() ? 6 : std::atoi(ai["HistoryTurns"].c_str());
+                    const int max_entries = std::max(2, turns * 2);
+                    if (static_cast<int>(messages.size()) > max_entries)
+                        messages.erase(messages.begin(), messages.end() - max_entries);
+                    const std::string system_prompt = ai["SystemPrompt"].empty() ? "\xE4\xBD\xA0\xE6\x98\xAF\xE4\xB8\x80\xE4\xB8\xAA\xE5\x8F\x8B\xE5\xA5\xBD\xE7\x9A\x84\xE4\xB8\xAD\xE6\x96\x87\xE8\x81\x8A\xE5\xA4\xA9\xE5\x8A\xA9\xE6\x89\x8B\xE3\x80\x82" : ai["SystemPrompt"];
+                    AiReply reply = AiChatClient().Chat(system_prompt, messages);
+                    std::string content = reply.success ? reply.content : "\x41\x49\x20\xE6\x9C\x8D\xE5\x8A\xA1\xE6\x9A\x82\xE6\x97\xB6\xE4\xB8\x8D\xE5\x8F\xAF\xE7\x94\xA8\xEF\xBC\x8C\xE8\xAF\xB7\xE7\xA8\x8D\xE5\x90\x8E\xE5\x86\x8D\xE8\xAF\x95\xE3\x80\x82";
+                    if (content.size() > 1400) {
+                        content.resize(1400);
+                        size_t start = content.size() - 1;
+                        while (start > 0 && (static_cast<unsigned char>(content[start]) & 0xC0) == 0x80) --start;
+                        const unsigned char lead = static_cast<unsigned char>(content[start]);
+                        const size_t expected = lead < 0x80 ? 1 : ((lead & 0xE0) == 0xC0 ? 2 : ((lead & 0xF0) == 0xE0 ? 3 : ((lead & 0xF8) == 0xF0 ? 4 : 1)));
+                        if (content.size() - start < expected) content.resize(start);
+                        content += "...";
+                    }
+                    if (reply.success) {
+                        Json::Value user_item; user_item["role"] = "user"; user_item["content"] = prompt;
+                        RedisMgr::GetInstance()->RPush(key, user_item.toStyledString());
+                        Json::Value ai_item; ai_item["role"] = "assistant"; ai_item["content"] = content;
+                        RedisMgr::GetInstance()->RPush(key, ai_item.toStyledString());
+                        RedisMgr::GetInstance()->TrimList(key, -max_entries, -1);
+                        RedisMgr::GetInstance()->Expire(key, 86400);
+                    }
+                    Json::Value out; out["error"] = ErrorCodes::Success; out["fromuid"] = ai_uid; out["touid"] = uid;
+                    Json::Value text; text["msgid"] = std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+                    text["content"] = content; out["text_array"].append(text);
+                    self->Send(out.toStyledString(), ID_NOTIFY_TEXT_CHAT_MSG_REQ);
+                } catch (...) {
+                    Json::Value out; out["error"] = ErrorCodes::Success; out["fromuid"] = ai_uid; out["touid"] = uid;
+                    Json::Value text; text["msgid"] = std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+                    text["content"] = "\x41\x49\x20\xE6\x9C\x8D\xE5\x8A\xA1\xE6\x9A\x82\xE6\x97\xB6\xE4\xB8\x8D\xE5\x8F\xAF\xE7\x94\xA8\xEF\xBC\x8C\xE8\xAF\xB7\xE7\xA8\x8D\xE5\x90\x8E\xE5\x86\x8D\xE8\xAF\x95\xE3\x80\x82"; out["text_array"].append(text);
+                    self->Send(out.toStyledString(), ID_NOTIFY_TEXT_CHAT_MSG_REQ);
+                }
+            }).detach();
+        } catch (...) {
+            {
+                std::lock_guard<std::mutex> lock(_ai_task_mutex);
+                --_active_ai_tasks;
+                _ai_task_done.notify_all();
+            }
+            Json::Value out; out["error"] = ErrorCodes::Success; out["fromuid"] = ai_uid; out["touid"] = uid;
+            Json::Value text; text["msgid"] = std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+            text["content"] = "\x41\x49\x20\xE6\x9C\x8D\xE5\x8A\xA1\xE6\x9A\x82\xE6\x97\xB6\xE4\xB8\x8D\xE5\x8F\xAF\xE7\x94\xA8\xEF\xBC\x8C\xE8\xAF\xB7\xE7\xA8\x8D\xE5\x90\x8E\xE5\x86\x8D\xE8\xAF\x95\xE3\x80\x82"; out["text_array"].append(text);
+            session->Send(out.toStyledString(), ID_NOTIFY_TEXT_CHAT_MSG_REQ);
+        }
+        return;
+    }
+    const std::string to_str = std::to_string(touid); std::string to_ip_value;
+    if (!RedisMgr::GetInstance()->Get(USERIPPREFIX + to_str, to_ip_value)) return;
+    const auto self_name = cfg["SelfServer"]["Name"];
+    if (to_ip_value == self_name) {
+        auto target = UserMgr::GetInstance()->GetSession(touid);
+        if (target) target->Send(ack.toStyledString(), ID_NOTIFY_TEXT_CHAT_MSG_REQ);
+        return;
+    }
+    TextChatMsgReq text_msg_req; text_msg_req.set_fromuid(uid); text_msg_req.set_touid(touid);
+    for (const auto& txt_obj : arrays) {
+        auto* text_msg = text_msg_req.add_textmsgs();
+        text_msg->set_msgid(txt_obj["msgid"].asString());
+        text_msg->set_msgcontent(txt_obj["content"].asString());
+    }
+    ChatGrpcClient::GetInstance()->NotifyTextChatMsg(to_ip_value, text_msg_req, ack);
 }
-
-
-
 bool LogicSystem::isPureDigit(const std::string& str)
 {
 	for (char c : str) {

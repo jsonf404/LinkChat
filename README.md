@@ -47,6 +47,36 @@ LinkChat/
 
 `server/VarifyServer` 使用 Node.js、`@grpc/grpc-js`、Redis 和 Nodemailer 提供验证码服务。邮件 SMTP 配置需要使用自己的邮箱及授权码，不能直接使用示例占位配置。
 
+### 本地 AI 聊天机器人
+
+ChatServer 已内置一个可直接对话的 Qwen 机器人。机器人通过 llama.cpp 的 OpenAI 兼容接口工作，默认请求 `http://127.0.0.1:8080/v1/chat/completions`，无需新增客户端协议或修改 protobuf。客户端登录后会自动显示 `QwenBot` 好友，机器人 UID 默认为 `900000001`；服务端会把配置的 UID、名称和头像随登录响应下发到客户端。请将该 UID 视为系统保留编号，确保它不与真实用户冲突。
+
+在 ChatServer 的 `config.ini` 中加入 `[AI]` 配置（Docker 部署可直接使用 `.env` 中的同名变量）：
+
+```ini
+[AI]
+Enabled = true
+Uid = 900000001
+Host = 127.0.0.1
+Port = 8080
+Path = /v1/chat/completions
+Model = qwen
+Name = QwenBot
+Nick = Qwen AI
+Icon = :/res/head_1.jpg
+SystemPrompt = 你是一个友好的中文聊天助手。
+MaxTokens = 512
+Temperature = 0.7
+HistoryTurns = 6
+TimeoutMs = 30000
+```
+
+启动 llama.cpp 时请启用 HTTP Server，并确认它提供非流式 `chat/completions` 接口。例如服务端应能接受 `messages`、`temperature`、`max_tokens` 和 `stream=false` 字段，并返回 `choices[0].message.content`。模型服务只需要在 ChatServer 可访问，不需要把模型文件放进本仓库。
+
+每位用户的上下文存放在 Redis 的 `ai:conversation:<uid>` 列表中，默认保留最近 6 轮问答，并设置 24 小时过期。请求模型失败时，消息仍会正常确认，并向客户端返回“AI 服务暂时不可用，请稍后再试。”，不会影响普通好友聊天。
+
+Docker 中的 ChatServer 不能用 `127.0.0.1` 访问宿主机模型，Compose 默认使用 `host.docker.internal`，并通过 `extra_hosts` 映射到宿主机。请确保 llama.cpp HTTP Server 监听容器可达的网卡地址（Docker Desktop 场景通常需要 `--host 0.0.0.0 --port 8080`），同时用宿主机防火墙限制访问范围；仅在宿主机回环地址监听时，容器通常无法连接。Linux 原生运行时请将 `AI_HOST` 改成模型服务所在机器的地址；若 llama.cpp 也在 Compose 中，则将其改成对应服务名。不要把私有模型地址、访问令牌或生产提示词提交到公开仓库。
+
 ## 架构与请求流程
 
 ```text

@@ -6,6 +6,8 @@
 #include <queue>
 #include <map>
 #include <functional>
+#include <condition_variable>
+#include <cstddef>
 #include "const.h"
 #include <json/json.h>
 #include <json/value.h>
@@ -20,6 +22,7 @@ class LogicSystem:public Singleton<LogicSystem>
 public:
 	~LogicSystem();
 	void PostMsgToQue(shared_ptr < LogicNode> msg);
+	void Stop();
 private:
 	LogicSystem();
 	void DealMsg();
@@ -41,5 +44,8 @@ private:
 	std::condition_variable _consume;
 	bool _b_stop;
 	std::map<short, FunCallBack> _fun_callbacks;
+	std::mutex _ai_task_mutex;
+	std::condition_variable _ai_task_done;
+	std::size_t _active_ai_tasks = 0;
 };
 

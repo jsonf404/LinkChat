@@ -20,6 +20,7 @@ public:
      std::shared_ptr<UserInfo> GetUserInfo();
     void AppendApplyList(QJsonArray array);
     void AppendFriendList(QJsonArray array);
+    void AddBuiltinFriend(int uid, const QString& name, const QString& nick, const QString& icon);
     std::vector<std::shared_ptr<ApplyInfo>> GetApplyList();
     void AddApplyList(std::shared_ptr<ApplyInfo> app);
     bool AlreadyApply(int uid);

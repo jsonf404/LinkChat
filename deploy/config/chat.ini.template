@@ -21,5 +21,20 @@ Schema = ${MYSQL_DATABASE}
 Host = ${REDIS_HOST}
 Port = ${REDIS_PORT}
 Passwd = ${REDIS_PASSWORD}
+[AI]
+Enabled = ${AI_ENABLED}
+Uid = ${AI_UID}
+Host = ${AI_HOST}
+Port = ${AI_PORT}
+Path = ${AI_PATH}
+Model = ${AI_MODEL}
+Name = ${AI_NAME}
+Nick = ${AI_NICK}
+Icon = ${AI_ICON}
+SystemPrompt = ${AI_SYSTEM_PROMPT}
+MaxTokens = ${AI_MAX_TOKENS}
+Temperature = ${AI_TEMPERATURE}
+HistoryTurns = ${AI_HISTORY_TURNS}
+TimeoutMs = ${AI_TIMEOUT_MS}
 [PeerServer]
 Servers =

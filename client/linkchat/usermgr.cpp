@@ -71,6 +71,14 @@ void UserMgr::AppendFriendList(QJsonArray array) {
     }
 }
 
+void UserMgr::AddBuiltinFriend(int uid, const QString& name, const QString& nick, const QString& icon)
+{
+    if (_friend_map.contains(uid)) return;
+    auto info = std::make_shared<FriendInfo>(uid, name, nick, icon, 0, QStringLiteral("本地 AI 助手"), QString());
+    _friend_list.push_back(info);
+    _friend_map.insert(uid, info);
+}
+
 std::vector<std::shared_ptr<ApplyInfo> > UserMgr::GetApplyList()
 {
     return _apply_list;

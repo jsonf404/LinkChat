@@ -132,30 +132,21 @@ bool RedisMgr::LPop(const std::string &key, std::string& value){
 }
 
 bool RedisMgr::RPush(const std::string& key, const std::string& value) {
-	auto connect = _con_pool->getConnection();
-	if (connect == nullptr) {
-		return false;
-	}
-	auto reply = (redisReply*)redisCommand(connect, "RPUSH %s %s", key.c_str(), value.c_str());
-	if (NULL == reply)
-	{
-		std::cout << "Execut command [ RPUSH " << key << "  " << value << " ] failure ! " << std::endl;
-		freeReplyObject(reply);
-		_con_pool->returnConnection(connect);
-		return false;
-	}
-
-	if (reply->type != REDIS_REPLY_INTEGER || reply->integer <= 0) {
-		std::cout << "Execut command [ RPUSH " << key << "  " << value << " ] failure ! " << std::endl;
-		freeReplyObject(reply);
-		_con_pool->returnConnection(connect);
-		return false;
-	}
-
-	std::cout << "Execut command [ RPUSH " << key << "  " << value << " ] success ! " << std::endl;
-	freeReplyObject(reply);
-	_con_pool->returnConnection(connect);
-	return true;
+    auto connect = _con_pool->getConnection();
+    if (connect == nullptr) return false;
+    const char* argv[] = { "RPUSH", key.c_str(), value.c_str() };
+    size_t lens[] = { 5, key.size(), value.size() };
+    auto reply = (redisReply*)redisCommandArgv(connect, 3, argv, lens);
+    if (reply == nullptr) {
+        std::cout << "Execut RPUSH command for key [ " << key << " ] failed" << std::endl;
+        _con_pool->returnConnection(connect);
+        return false;
+    }
+    const bool ok = reply->type == REDIS_REPLY_INTEGER && reply->integer > 0;
+    if (!ok) std::cout << "Execut RPUSH command for key [ " << key << " ] failed" << std::endl;
+    freeReplyObject(reply);
+    _con_pool->returnConnection(connect);
+    return ok;
 }
 bool RedisMgr::RPop(const std::string& key, std::string& value) {
 	auto connect = _con_pool->getConnection();
@@ -358,3 +349,54 @@ bool RedisMgr::ExistsKey(const std::string &key)
 }
 
 
+
+bool RedisMgr::LRange(const std::string& key, int start, int stop, std::vector<std::string>& values)
+{
+    values.clear();
+    auto connect = _con_pool->getConnection();
+    if (!connect) return false;
+    std::string first = std::to_string(start), last = std::to_string(stop);
+    const char* argv[] = { "LRANGE", key.c_str(), first.c_str(), last.c_str() };
+    size_t lengths[] = { 6, key.size(), first.size(), last.size() };
+    auto reply = (redisReply*)redisCommandArgv(connect, 4, argv, lengths);
+    if (!reply || reply->type != REDIS_REPLY_ARRAY) {
+        if (reply) freeReplyObject(reply);
+        _con_pool->returnConnection(connect);
+        return false;
+    }
+    for (size_t i = 0; i < reply->elements; ++i) {
+        if (reply->element[i] && reply->element[i]->type == REDIS_REPLY_STRING)
+            values.emplace_back(reply->element[i]->str, reply->element[i]->len);
+    }
+    freeReplyObject(reply);
+    _con_pool->returnConnection(connect);
+    return true;
+}
+
+bool RedisMgr::TrimList(const std::string& key, int start, int stop)
+{
+    auto connect = _con_pool->getConnection();
+    if (!connect) return false;
+    std::string first = std::to_string(start), last = std::to_string(stop);
+    const char* argv[] = { "LTRIM", key.c_str(), first.c_str(), last.c_str() };
+    size_t lengths[] = { 5, key.size(), first.size(), last.size() };
+    auto reply = (redisReply*)redisCommandArgv(connect, 4, argv, lengths);
+    const bool ok = reply && reply->type == REDIS_REPLY_STATUS && reply->str && std::string(reply->str) == "OK";
+    if (reply) freeReplyObject(reply);
+    _con_pool->returnConnection(connect);
+    return ok;
+}
+
+bool RedisMgr::Expire(const std::string& key, int seconds)
+{
+    auto connect = _con_pool->getConnection();
+    if (!connect) return false;
+    std::string expiry = std::to_string(seconds);
+    const char* argv[] = { "EXPIRE", key.c_str(), expiry.c_str() };
+    size_t lengths[] = { 6, key.size(), expiry.size() };
+    auto reply = (redisReply*)redisCommandArgv(connect, 3, argv, lengths);
+    const bool ok = reply && reply->type == REDIS_REPLY_INTEGER && reply->integer == 1;
+    if (reply) freeReplyObject(reply);
+    _con_pool->returnConnection(connect);
+    return ok;
+}

@@ -15,6 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AiChatClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClCompile Include="AiChatClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="ChatServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

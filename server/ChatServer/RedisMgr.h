@@ -4,6 +4,7 @@
 #include <queue>
 #include <atomic>
 #include <mutex>
+#include <vector>
 #include "Singleton.h"
 class RedisConPool {
 public:
@@ -167,6 +168,9 @@ public:
 	bool HDel(const std::string& key, const std::string& field);
 	bool Del(const std::string &key);
 	bool ExistsKey(const std::string &key);
+	bool LRange(const std::string& key, int start, int stop, std::vector<std::string>& values);
+	bool TrimList(const std::string& key, int start, int stop);
+	bool Expire(const std::string& key, int seconds);
 	void Close() {
 		_con_pool->Close();
 		_con_pool->ClearConnections();

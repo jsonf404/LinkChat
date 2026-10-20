@@ -151,6 +151,13 @@ void TcpMgr::initHandlers()
         if (jsonObj.contains("friend_list")) {
             UserMgr::GetInstance()->AppendFriendList(jsonObj["friend_list"].toArray());
         }
+        if (!jsonObj.contains("ai_enabled") || jsonObj["ai_enabled"].toBool()) {
+            const int aiUid = jsonObj.contains("ai_uid") ? jsonObj["ai_uid"].toInt() : 900000001;
+            const QString aiName = jsonObj.contains("ai_name") ? jsonObj["ai_name"].toString() : QStringLiteral("QwenBot");
+            const QString aiNick = jsonObj.contains("ai_nick") ? jsonObj["ai_nick"].toString() : QStringLiteral("Qwen AI");
+            const QString aiIcon = jsonObj.contains("ai_icon") ? jsonObj["ai_icon"].toString() : QStringLiteral(":/res/head_1.jpg");
+            UserMgr::GetInstance()->AddBuiltinFriend(aiUid, aiName, aiNick, aiIcon);
+        }
 
         emit sig_swich_chatdlg();
     });

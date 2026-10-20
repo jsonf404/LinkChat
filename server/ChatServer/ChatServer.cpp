@@ -52,12 +52,14 @@ int main()
 		auto port_str = cfg["SelfServer"]["Port"];
 		CServer s(io_context, atoi(port_str.c_str()));
 		io_context.run();
+		LogicSystem::GetInstance()->Stop();
 		RedisMgr::GetInstance()->HDel(LOGIN_COUNT, server_name);
 		RedisMgr::GetInstance()->Close();
 		grpc_server_thread.join();
 	}
 	catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << endl;
+		LogicSystem::GetInstance()->Stop();
 		RedisMgr::GetInstance()->HDel(LOGIN_COUNT, server_name);
 		RedisMgr::GetInstance()->Close();
 	}

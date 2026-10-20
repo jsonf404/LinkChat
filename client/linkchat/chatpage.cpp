@@ -167,6 +167,10 @@ void ChatPage::on_send_btn_clicked()
 
     }
 
+    if (textArray.isEmpty()) {
+        return;
+    }
+
     qDebug() << "textArray is " << textArray ;
     //发送给服务器
     textObj["text_array"] = textArray;
