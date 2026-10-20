@@ -143,6 +143,107 @@ cmake --preset servers-only `
 
 MySQL Connector/C++ 的安装布局和库名称因版本而异；如果 CMake 未找到 `jdbc/mysql_driver.h` 或 `mysqlcppconn` 库，请检查 `LINKCHAT_MYSQL_ROOT` 下的 include/lib 目录。hiredis 同理检查头文件和库文件是否位于其安装目录中。
 
+## Linux 原生构建
+
+Linux 服务端使用与 Windows 相同的 CMake 工程。Qt 客户端也可以在安装 Qt/X11 开发环境后使用 CMake 构建，但服务器 Docker 镜像只包含 C++ 服务，不包含桌面客户端。推荐使用 Ubuntu 22.04 或更新版本、GCC 11+、CMake 3.20+ 和 Ninja：
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+  build-essential cmake ninja-build pkg-config \
+  libboost-all-dev libgrpc++-dev libprotobuf-dev \
+  protobuf-compiler protobuf-compiler-grpc \
+  libjsoncpp-dev libhiredis-dev libmysqlcppconn-dev
+
+cmake --preset linux-servers
+cmake --build --preset linux-servers --parallel
+```
+
+如果发行版没有提供 MySQL Connector/C++ 或 gRPC 的 CMake package，请使用发行版对应的开发包或从源码安装后，通过 `CMAKE_PREFIX_PATH`、`LINKCHAT_MYSQL_ROOT` 和 `LINKCHAT_HIREDIS_ROOT` 指定安装位置：
+
+```bash
+cmake --preset linux-servers \
+  -DCMAKE_PREFIX_PATH=/opt/linkchat-deps \
+  -DLINKCHAT_MYSQL_ROOT=/opt/mysql-connector \
+  -DLINKCHAT_HIREDIS_ROOT=/opt/hiredis
+```
+
+Linux 服务程序从当前工作目录读取 `config.ini`。运行时请在每个服务目录或独立工作目录中放置对应配置，并确保 `LD_LIBRARY_PATH` 包含 MySQL Connector/C++、gRPC 或其他非系统库的运行时目录。若需要重新生成 gRPC 源文件，先安装与头文件版本匹配的 `protoc` 和 `grpc_cpp_plugin`，再配置 `-DLINKCHAT_REGENERATE_PROTO=ON`。
+
+### Linux 直接运行服务
+
+```bash
+./build/linux-servers/server/StatusServer/StatusServer
+./build/linux-servers/server/ChatServer/ChatServer
+./build/linux-servers/server/GateServer/GateServer
+```
+
+实际可执行文件路径取决于 CMake 生成器和构建目录。启动前先准备 `config.ini`、MySQL、Redis、VarifyServer，并按照“VarifyServer → StatusServer → ChatServer → GateServer”的顺序启动。
+
+## Docker Compose 部署
+
+仓库提供 `compose.yaml`，用于编排 MySQL、Redis、Node.js 验证服务、StatusServer、ChatServer 和 GateServer。Qt 客户端不放进服务器镜像，仍在桌面系统上运行。
+
+### 1. 准备环境变量
+
+```bash
+cp deploy/.env.example .env
+```
+
+编辑 `.env`，至少修改 `MYSQL_PASSWORD`、`MYSQL_ROOT_PASSWORD`、`REDIS_PASSWORD`、`SMTP_USER` 和 `SMTP_PASSWORD`。`SMTP_PASSWORD` 应为邮箱应用授权码。`CHAT_ADVERTISE_HOST` 必须是 Qt 客户端能够访问 ChatServer 的地址：
+
+- 客户端和 Docker 在同一台电脑：通常可用 `127.0.0.1`。
+- 客户端在局域网其他电脑：填写 Docker 宿主机的局域网 IP 或可解析域名。
+- 不要填写 Compose 内部服务名 `chat`，宿主机外的 Qt 客户端通常无法解析该名称。
+
+### 2. 启动全部服务
+
+```bash
+docker compose build
+docker compose up -d
+docker compose ps
+docker compose logs -f gate
+```
+
+默认暴露端口为：
+
+| 服务 | 容器端口 | 宿主机默认端口 | 用途 |
+| --- | ---: | ---: | --- |
+| GateServer | 8080 | 8080 | 客户端 HTTP 接口 |
+| ChatServer | 8090 | 8090 | 客户端 TCP 聊天连接 |
+| MySQL | 3306 | 不公开 | 用户与好友数据 |
+| Redis | 6379 | 不公开 | 验证码、状态和缓存 |
+| StatusServer | 50052 | Compose 内部 | 节点状态 gRPC |
+| VarifyServer | 50051 | Compose 内部 | 邮箱验证码 gRPC |
+
+### 3. 初始化和重置数据
+
+MySQL 第一次使用空数据卷启动时会自动执行 `sqldata/linkchat.sql`。该脚本包含删除并重建表的语句；已有数据卷不会在每次启动时重复导入。需要重新初始化时，先备份数据，再执行：
+
+```bash
+docker compose down
+docker volume rm linkchat_mysql_data
+docker compose up -d mysql
+```
+
+不要在生产环境执行上述删除命令。
+
+### 4. 停止与清理
+
+```bash
+docker compose down                 # 停止容器，保留数据卷
+docker compose down -v              # 同时删除 MySQL/Redis 数据卷
+docker compose logs -f verify       # 查看验证码服务日志
+```
+
+### Docker 设计说明
+
+- C++ 服务镜像由 `deploy/docker/Dockerfile.cpp` 多阶段构建，构建阶段安装开发依赖，运行阶段使用较小的 Ubuntu 运行环境。
+- 验证服务镜像由 `deploy/docker/Dockerfile.verify` 构建，启动脚本根据环境变量临时生成 `/app/config.json`，不会把邮箱密码写进镜像层。
+- C++ 服务模板位于 `deploy/config/`，入口脚本使用环境变量展开为容器内 `/app/config.ini`。
+- `deploy/.env.example` 只包含占位符；真实 `.env` 已被 `.dockerignore` 排除，不应提交到版本库。
+- Compose 中的服务名（`mysql`、`redis`、`verify`、`status`、`chat`、`gate`）只用于容器内部通信；客户端连接地址必须使用宿主机可达地址。
+
 ### 使用 Visual Studio 生成器
 
 也可以绕过 Ninja 预设，直接选择 Visual Studio 生成器：

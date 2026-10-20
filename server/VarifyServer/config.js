@@ -3,6 +3,8 @@ const fs = require('fs');
 let config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 let email_user = config.email.user;
 let email_pass = config.email.pass;
+let smtp_host = config.email.smtp_host || 'smtp.163.com';
+let smtp_port = config.email.smtp_port || 465;
 let mysql_host = config.mysql.host;
 let mysql_port = config.mysql.port;
 let redis_host = config.redis.host;
@@ -11,4 +13,4 @@ let redis_passwd = config.redis.passwd;
 let code_prefix = "code_";
 
 
-module.exports = {email_pass, email_user, mysql_host, mysql_port,redis_host, redis_port, redis_passwd, code_prefix}
+module.exports = {email_pass, email_user, smtp_host, smtp_port, mysql_host, mysql_port,redis_host, redis_port, redis_passwd, code_prefix}

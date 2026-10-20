@@ -1,4 +1,4 @@
-find_package(Boost 1.70 REQUIRED)
+find_package(Boost 1.70 REQUIRED COMPONENTS filesystem)
 find_package(Protobuf REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
@@ -8,7 +8,8 @@ set(LINKCHAT_MYSQL_ROOT "" CACHE PATH "MySQL Connector/C++ installation prefix")
 set(LINKCHAT_HIREDIS_ROOT "" CACHE PATH "hiredis installation prefix")
 
 find_path(LINKCHAT_MYSQL_INCLUDE_DIR jdbc/mysql_driver.h
-    HINTS "${LINKCHAT_MYSQL_ROOT}" PATH_SUFFIXES include)
+    HINTS "${LINKCHAT_MYSQL_ROOT}"
+    PATH_SUFFIXES include include/mysql-cppconn-8 mysql-cppconn-8)
 find_library(LINKCHAT_MYSQL_LIBRARY NAMES mysqlcppconn mysqlcppconn8
     HINTS "${LINKCHAT_MYSQL_ROOT}" PATH_SUFFIXES lib lib64)
 find_path(LINKCHAT_HIREDIS_INCLUDE_DIR hiredis.h
@@ -43,6 +44,7 @@ target_include_directories(linkchat_server_common INTERFACE
 )
 target_link_libraries(linkchat_server_common INTERFACE
     ${LINKCHAT_BOOST_TARGET}
+    Boost::filesystem
     gRPC::grpc++
     protobuf::libprotobuf
     ${LINKCHAT_JSONCPP_TARGET}

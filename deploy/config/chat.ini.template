@@ -1,0 +1,25 @@
+[GateServer]
+Port = 8080
+[VarifyServer]
+Host = verify
+Port = 50051
+[StatusServer]
+Host = status
+Port = 50052
+[SelfServer]
+Name = chatserver1
+Host = 0.0.0.0
+Port = 8090
+RPCPort = 50055
+[Mysql]
+Host = ${MYSQL_HOST}
+Port = ${MYSQL_PORT}
+User = ${MYSQL_USER}
+Passwd = ${MYSQL_PASSWORD}
+Schema = ${MYSQL_DATABASE}
+[Redis]
+Host = ${REDIS_HOST}
+Port = ${REDIS_PORT}
+Passwd = ${REDIS_PASSWORD}
+[PeerServer]
+Servers =

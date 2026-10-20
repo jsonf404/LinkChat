@@ -1,0 +1,16 @@
+FROM node:20-bookworm-slim
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY server/VarifyServer/package.json server/VarifyServer/package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY server/VarifyServer/*.js ./
+COPY deploy/docker/entrypoint-verify.sh /usr/local/bin/linkchat-verify-entrypoint
+RUN chmod 0755 /usr/local/bin/linkchat-verify-entrypoint \
+    && chown -R node:node /app
+
+USER node
+EXPOSE 50051
+ENTRYPOINT ["/usr/local/bin/linkchat-verify-entrypoint"]

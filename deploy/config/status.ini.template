@@ -1,0 +1,19 @@
+[StatusServer]
+Host = 0.0.0.0
+Port = 50052
+[Mysql]
+Host = ${MYSQL_HOST}
+Port = ${MYSQL_PORT}
+User = ${MYSQL_USER}
+Passwd = ${MYSQL_PASSWORD}
+Schema = ${MYSQL_DATABASE}
+[Redis]
+Host = ${REDIS_HOST}
+Port = ${REDIS_PORT}
+Passwd = ${REDIS_PASSWORD}
+[chatservers]
+Name = chatserver1
+[chatserver1]
+Name = chatserver1
+Host = ${CHAT_ADVERTISE_HOST}
+Port = 8090

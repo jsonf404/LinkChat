@@ -1,0 +1,141 @@
+name: linkchat
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-linkchat}
+      MYSQL_USER: ${MYSQL_USER:-linkchat}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sqldata/linkchat.sql:/docker-entrypoint-initdb.d/01-linkchat.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  verify:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.verify
+    image: linkchat-verify:local
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+      SMTP_HOST: ${SMTP_HOST:-smtp.163.com}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USER: ${SMTP_USER:?Set SMTP_USER in .env}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP_PASSWORD in .env}
+    expose:
+      - "50051"
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+
+  status:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.cpp
+      args:
+        SERVICE: StatusServer
+    image: linkchat-cpp:local
+    restart: unless-stopped
+    environment: &cpp_env
+      LINKCHAT_SERVICE: StatusServer
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-linkchat}
+      MYSQL_USER: ${MYSQL_USER:-linkchat}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+      CHAT_ADVERTISE_HOST: ${CHAT_ADVERTISE_HOST:-127.0.0.1}
+    expose:
+      - "50052"
+    volumes:
+      - ./deploy/config/status.ini.template:/config/StatusServer.ini.template:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+
+  chat:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.cpp
+      args:
+        SERVICE: ChatServer
+    image: linkchat-chat:local
+    restart: unless-stopped
+    environment:
+      <<: *cpp_env
+      LINKCHAT_SERVICE: ChatServer
+    ports:
+      - "${CHAT_TCP_PORT:-8090}:8090"
+    expose:
+      - "50055"
+    volumes:
+      - ./deploy/config/chat.ini.template:/config/ChatServer.ini.template:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      status:
+        condition: service_started
+
+  gate:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.cpp
+      args:
+        SERVICE: GateServer
+    image: linkchat-gate:local
+    restart: unless-stopped
+    environment:
+      <<: *cpp_env
+      LINKCHAT_SERVICE: GateServer
+    ports:
+      - "${GATE_HTTP_PORT:-8080}:8080"
+    volumes:
+      - ./deploy/config/gate.ini.template:/config/GateServer.ini.template:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      verify:
+        condition: service_started
+      status:
+        condition: service_started
+
+volumes:
+  mysql_data:
+  redis_data:

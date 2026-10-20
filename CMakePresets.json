@@ -34,6 +34,19 @@
       "cacheVariables": {
         "LINKCHAT_BUILD_SERVERS": "OFF"
       }
+    },
+    {
+      "name": "linux-servers",
+      "displayName": "Linux C++ servers",
+      "description": "Configure the C++ services with the Linux toolchain.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "LINKCHAT_BUILD_CLIENT": "OFF",
+        "LINKCHAT_BUILD_SERVERS": "ON",
+        "LINKCHAT_REGENERATE_PROTO": "OFF"
+      }
     }
   ],
   "buildPresets": [
@@ -48,6 +61,10 @@
     {
       "name": "client-only",
       "configurePreset": "client-only"
+    },
+    {
+      "name": "linux-servers",
+      "configurePreset": "linux-servers"
     }
   ]
 }

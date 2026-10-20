@@ -1,0 +1,16 @@
+.git
+.github
+build
+cmake-build-*
+**/bin
+**/obj
+**/*.user
+**/*.suo
+**/node_modules
+**/config.ini
+**/config.json
+**/.env
+**/.env.*
+!**/.env.example
+开发文档
+img
