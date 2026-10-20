@@ -136,7 +136,7 @@ void SearchList::slot_item_clicked(QListWidgetItem *item)
 
         //todo ...
         _find_dlg = std::make_shared<FindSuccessDlg>(this);
-        auto si = std::make_shared<SearchInfo>(0,"llfc","llfc","hello , my friend!",0);
+        auto si = std::make_shared<SearchInfo>(0,"LinkChat","LinkChat","hello , my friend!",0);
         (std::dynamic_pointer_cast<FindSuccessDlg>(_find_dlg))->SetSearchInfo(si);
         _find_dlg->show();
         return;
@@ -155,7 +155,7 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = llfcchat
+TARGET = LinkChat
 TEMPLATE = app
 RC_ICONS = icon.ico
 DESTDIR = ./bin

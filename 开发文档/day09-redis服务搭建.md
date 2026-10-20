@@ -47,7 +47,7 @@ requirepass 123456
 
 Linux安装容器后，直接用容器启动redis
 ``` bash
-docker run -d --name llfc-redis -p 6380:6379 redis  --requirepass "123456"
+docker run -d --name linkchat-redis -p 6380:6379 redis  --requirepass "123456"
 ```
 为了方便测试能否链接以及以后查看数据,大家可以下载redis desktop manager
 
@@ -320,7 +320,7 @@ ssize_t FDAPI_write(int rfd, const void *buf, size_t count);
 ```
 考虑大家修改起来很麻烦，可以下载我的代码
 
-[https://gitee.com/secondtonone1/windows-redis](https://gitee.com/secondtonone1/windows-redis)
+[https://example.com/your-account/windows-redis](https://example.com/your-account/windows-redis)
 
 再次编译生成hredis和Win32_Interop的lib库，重新配置下，项目再次编译就通过了。
 
@@ -650,11 +650,11 @@ void RedisMgr::Close()
 void TestRedisMgr() {
 	assert(RedisMgr::GetInstance()->Connect("127.0.0.1", 6380));
 	assert(RedisMgr::GetInstance()->Auth("123456"));
-	assert(RedisMgr::GetInstance()->Set("blogwebsite","llfc.club"));
+	assert(RedisMgr::GetInstance()->Set("blogwebsite","example.com"));
 	std::string value="";
 	assert(RedisMgr::GetInstance()->Get("blogwebsite", value) );
 	assert(RedisMgr::GetInstance()->Get("nonekey", value) == false);
-	assert(RedisMgr::GetInstance()->HSet("bloginfo","blogwebsite", "llfc.club"));
+	assert(RedisMgr::GetInstance()->HSet("bloginfo","blogwebsite", "example.com"));
 	assert(RedisMgr::GetInstance()->HGet("bloginfo","blogwebsite") != "");
 	assert(RedisMgr::GetInstance()->ExistsKey("bloginfo"));
 	assert(RedisMgr::GetInstance()->Del("bloginfo"));

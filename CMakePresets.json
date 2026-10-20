@@ -1,0 +1,53 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "LinkChat default",
+      "description": "Configure client and C++ servers with locally installed dependencies.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "LINKCHAT_MYSQL_ROOT": "",
+        "LINKCHAT_HIREDIS_ROOT": "",
+        "CMAKE_PREFIX_PATH": ""
+      }
+    },
+    {
+      "name": "servers-only",
+      "inherits": "default",
+      "displayName": "LinkChat servers only",
+      "cacheVariables": {
+        "LINKCHAT_BUILD_CLIENT": "OFF"
+      }
+    },
+    {
+      "name": "client-only",
+      "inherits": "default",
+      "displayName": "LinkChat client only",
+      "cacheVariables": {
+        "LINKCHAT_BUILD_SERVERS": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default"
+    },
+    {
+      "name": "servers-only",
+      "configurePreset": "servers-only"
+    },
+    {
+      "name": "client-only",
+      "configurePreset": "client-only"
+    }
+  ]
+}

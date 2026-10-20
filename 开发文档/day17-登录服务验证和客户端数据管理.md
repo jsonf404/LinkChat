@@ -69,7 +69,7 @@ void LogicSystem::LoginHandler(shared_ptr<CSession> session, const short &msg_id
 ``` cpp
 Status StatusServiceImpl::GetChatServer(ServerContext* context, const GetChatServerReq* request, GetChatServerRsp* reply)
 {
-	std::string prefix("llfc status server has received :  ");
+	std::string prefix("LinkChat status server has received :  ");
 	const auto& server = getChatServer();
 	reply->set_host(server.host);
 	reply->set_port(server.port);

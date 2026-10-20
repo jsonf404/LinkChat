@@ -298,9 +298,9 @@ docker run --name mysqltest \
 ```
 创建三个目录，我得目录是
 ``` bash
-mkdir -p /home/zack/llfc/mysql/config
-mkdir -p /home/zack/llfc/mysql/data
-mkdir -p /home/zack/llfc/mysql/logs
+mkdir -p /home/your-user/LinkChat/mysql/config
+mkdir -p /home/your-user/LinkChat/mysql/data
+mkdir -p /home/your-user/LinkChat/mysql/logs
 ```
 
 进入docker中
@@ -311,7 +311,7 @@ docker exec -it mysqltest bash
 
 所以接下来退出容器，执行拷贝命令
 ``` bash
-docker cp mysqltest:/etc/mysql/my.cnf  /home/zack/llfc/mysql/config
+docker cp mysqltest:/etc/mysql/my.cnf  /home/your-user/LinkChat/mysql/config
 ```
 然后删除测试用的mysql docker
 ``` bash
@@ -320,16 +320,16 @@ docker rm -f mysqltest
 然后启动我们的容器
 ``` bash
 docker run --restart=on-failure:3 -d   \
--v /home/zack/llfc/mysql/config/my.cnf:/etc/mysql/my.cnf \
--v /home/zack/llfc/mysql/data/:/var/lib/mysql \
--v /home/zack/llfc/mysql/logs:/logs -p 3308:3306  \
---name llfcmysql -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0
+-v /home/your-user/LinkChat/mysql/config/my.cnf:/etc/mysql/my.cnf \
+-v /home/your-user/LinkChat/mysql/data/:/var/lib/mysql \
+-v /home/your-user/LinkChat/mysql/logs:/logs -p 3308:3306  \
+--name linkchat-mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0
 ```
 ## 设置远程访问
 
 进入docker 
 ``` bash
-docker exec -it llfcmysql bash
+docker exec -it linkchat-mysql bash
 ```
 登录mysql
 ``` bash

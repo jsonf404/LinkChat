@@ -13,3 +13,16 @@
 **技 术 栈：**C++、Boost.Asio、gRPC、Redis、MySQL、Qt5、llama.cpp、GTest、Benchmark，多线程/异步编程，分布式系统设计
 
 **成** **果：**单节点压测支持8000+并发连接，长时间运行通信状态稳定；核心模块单元测试覆盖率达到85%
+
+## CMake 构建
+
+项目提供 CMake 构建文件，要求 CMake 3.20 或更高版本，C++14 编译器，以及以下依赖：Qt 5/6（客户端）、Boost、Protobuf、gRPC、JsonCpp、MySQL Connector/C++ 和 hiredis。
+
+使用 Qt、gRPC 等依赖的 CMake 安装前缀设置 `CMAKE_PREFIX_PATH`，并通过 `LINKCHAT_MYSQL_ROOT` 与 `LINKCHAT_HIREDIS_ROOT` 指定 MySQL Connector/C++ 和 hiredis 的安装目录。例如：
+
+```powershell
+cmake --preset servers-only -DCMAKE_PREFIX_PATH="D:/cppsoft/grpc;D:/Qt/6.6.0/msvc2019_64" -DLINKCHAT_MYSQL_ROOT="D:/cppsoft/mysql-connector" -DLINKCHAT_HIREDIS_ROOT="D:/cppsoft/hiredis"
+cmake --build --preset servers-only
+```
+
+客户端和服务端也可以分别使用 `client-only` 与默认 `default` 预设。仓库内已提交的 protobuf/gRPC C++ 文件默认直接参与构建；需要重新生成时可增加 `-DLINKCHAT_REGENERATE_PROTO=ON`。

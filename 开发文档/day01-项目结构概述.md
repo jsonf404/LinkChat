@@ -15,7 +15,7 @@
 
 ![img/1709012628800.jpg](img/1709012628800.jpg)
 
-项目名称叫做llfcchat，位置大家自己选择。
+项目名称叫做LinkChat，位置大家自己选择。
 
 接下来一路同意，最后生成项目。
 
@@ -31,7 +31,7 @@
  * @file       %{CurrentDocument:FileName}
  * @brief      XXXX Function
  *
- * @author     恋恋风辰
+ * @author     项目维护者
  * @date       %{CurrentDate:yyyy\/MM\/dd}
  * @history    
  *****************************************************************************/
@@ -44,7 +44,7 @@
 修改mainwindow.ui属性,长宽改为300*500
 ![img/1709017541569.jpg](img/1709017541569.jpg)
 
-将window title 改为llfcchat
+将window title 改为LinkChat
 
 大家自己找个icon.ico文件放到项目根目录，或者用我的也行，然后在项目pro里添加输出目录文件和icon图标
 ``` cpp

@@ -119,7 +119,7 @@ void RegisterDialog::on_get_code_clicked()
 
 ![img/1710209670231.jpg](img/1710209670231.jpg)
 
-启动服务器后，再次获取验证码，就显示正确提示了，而且客户端输出了服务器回传的邮箱地址`email is  "secondtonone1@163.com"`，界面也刷新为正确显示
+启动服务器后，再次获取验证码，就显示正确提示了，而且客户端输出了服务器回传的邮箱地址`email is  "owner@example.com"`，界面也刷新为正确显示
 
 ![img/1710210157771.jpg](img/1710210157771.jpg)
 

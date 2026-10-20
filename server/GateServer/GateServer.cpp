@@ -1,4 +1,4 @@
-﻿// GateServer.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
+// GateServer.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
 #include <iostream>
@@ -104,11 +104,11 @@ void TestRedis() {
 }
 
 void TestRedisMgr() {
-	assert(RedisMgr::GetInstance()->Set("blogwebsite","llfc.club"));
+	assert(RedisMgr::GetInstance()->Set("blogwebsite","example.com"));
 	std::string value="";
 	assert(RedisMgr::GetInstance()->Get("blogwebsite", value) );
 	assert(RedisMgr::GetInstance()->Get("nonekey", value) == false);
-	assert(RedisMgr::GetInstance()->HSet("bloginfo","blogwebsite", "llfc.club"));
+	assert(RedisMgr::GetInstance()->HSet("bloginfo","blogwebsite", "example.com"));
 	assert(RedisMgr::GetInstance()->HGet("bloginfo","blogwebsite") != "");
 	assert(RedisMgr::GetInstance()->ExistsKey("bloginfo"));
 	assert(RedisMgr::GetInstance()->Del("bloginfo"));
@@ -124,7 +124,7 @@ void TestRedisMgr() {
 }
 
 void TestMysqlMgr() {
-	int id = MysqlMgr::GetInstance()->RegUser("wwc","secondtonone1@163.com","123456",": / res / head_1.jpg");
+	int id = MysqlMgr::GetInstance()->RegUser("wwc","owner@example.com","123456",": / res / head_1.jpg");
 	std::cout << "id  is " << id << std::endl;
 }
 

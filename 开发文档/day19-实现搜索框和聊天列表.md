@@ -413,7 +413,7 @@ std::vector<QString> heads = {
 };
 
 std::vector<QString> names = {
-    "llfc",
+    "LinkChat",
     "zack",
     "golang",
     "cpp",

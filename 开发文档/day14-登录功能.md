@@ -372,7 +372,7 @@ Host = 81.68.86.146
 Port = 3308
 User = root
 Passwd = 123456
-Schema = llfc
+Schema = LinkChat
 [Redis]
 Host = 81.68.86.146
 Port = 6380
@@ -524,7 +524,7 @@ Host = 81.68.86.146
 Port = 3308
 User = root
 Passwd = 123456
-Schema = llfc
+Schema = LinkChat
 [Redis]
 Host = 81.68.86.146
 Port = 6380
@@ -585,7 +585,7 @@ std::string generate_unique_string() {
 
 Status StatusServiceImpl::GetChatServer(ServerContext* context, const GetChatServerReq* request, GetChatServerRsp* reply)
 {
-	std::string prefix("llfc status server has received :  ");
+	std::string prefix("LinkChat status server has received :  ");
 	_server_index = (_server_index++) % (_servers.size());
 	auto &server = _servers[_server_index];
 	reply->set_host(server.host);
