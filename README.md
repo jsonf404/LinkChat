@@ -71,6 +71,8 @@ HistoryTurns = 6
 TimeoutMs = 30000
 ```
 
+`TimeoutMs` 会限制在 1-120 秒，`MaxTokens` 会限制在 1-8192，`Temperature` 会限制在 0-2。服务端会校验 OpenAI 兼容响应中的 `choices[0].message.content`，避免把异常响应当作正常消息发送给客户端。
+
 启动 llama.cpp 时请启用 HTTP Server，并确认它提供非流式 `chat/completions` 接口。例如服务端应能接受 `messages`、`temperature`、`max_tokens` 和 `stream=false` 字段，并返回 `choices[0].message.content`。模型服务只需要在 ChatServer 可访问，不需要把模型文件放进本仓库。
 
 每位用户的上下文存放在 Redis 的 `ai:conversation:<uid>` 列表中，默认保留最近 6 轮问答，并设置 24 小时过期。请求模型失败时，消息仍会正常确认，并向客户端返回“AI 服务暂时不可用，请稍后再试。”，不会影响普通好友聊天。

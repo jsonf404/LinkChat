@@ -80,6 +80,11 @@ services:
       - "50052"
     volumes:
       - ./deploy/config/status.ini.template:/config/StatusServer.ini.template:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/50052'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
     depends_on:
       redis:
         condition: service_healthy
@@ -117,6 +122,11 @@ services:
       - "50055"
     volumes:
       - ./deploy/config/chat.ini.template:/config/ChatServer.ini.template:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8090'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -125,7 +135,7 @@ services:
       mysql:
         condition: service_healthy
       status:
-        condition: service_started
+        condition: service_healthy
 
   gate:
     build:

@@ -8,6 +8,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <chrono>
+#include <algorithm>
 
 AiReply AiChatClient::Chat(const std::string& system_prompt,
     const std::vector<std::pair<std::string, std::string>>& messages) const {
@@ -15,11 +16,12 @@ AiReply AiChatClient::Chat(const std::string& system_prompt,
     if (section["Enabled"] == "false" || section["Enabled"] == "0") return {false, "", "AI service is disabled"};
     const std::string host = section["Host"].empty() ? "127.0.0.1" : section["Host"];
     const std::string port = section["Port"].empty() ? "8080" : section["Port"];
-    const std::string target = section["Path"].empty() ? "/v1/chat/completions" : section["Path"];
+    std::string target = section["Path"].empty() ? "/v1/chat/completions" : section["Path"];
+    if (target.front() != '/') target.insert(target.begin(), '/');
     const std::string model = section["Model"].empty() ? "qwen" : section["Model"];
-    const int timeout_ms = section["TimeoutMs"].empty() ? 30000 : std::atoi(section["TimeoutMs"].c_str());
-    const int max_tokens = section["MaxTokens"].empty() ? 512 : std::atoi(section["MaxTokens"].c_str());
-    const double temperature = section["Temperature"].empty() ? 0.7 : std::atof(section["Temperature"].c_str());
+    const int timeout_ms = std::max(1000, std::min(120000, section["TimeoutMs"].empty() ? 30000 : std::atoi(section["TimeoutMs"].c_str())));
+    const int max_tokens = std::max(1, std::min(8192, section["MaxTokens"].empty() ? 512 : std::atoi(section["MaxTokens"].c_str())));
+    const double temperature = std::max(0.0, std::min(2.0, section["Temperature"].empty() ? 0.7 : std::atof(section["Temperature"].c_str())));
     Json::Value body; body["model"] = model; body["temperature"] = temperature; body["max_tokens"] = max_tokens; body["stream"] = false;
     if (!system_prompt.empty()) { Json::Value item; item["role"] = "system"; item["content"] = system_prompt; body["messages"].append(item); }
     for (const auto& message : messages) { Json::Value item; item["role"] = message.first; item["content"] = message.second; body["messages"].append(item); }
@@ -34,7 +36,7 @@ AiReply AiChatClient::Chat(const std::string& system_prompt,
         unsigned int response_status = 0;
         std::string response_body;
         http::request<http::string_body> request(http::verb::post, target, 11);
-        request.set(http::field::host, host); request.set(http::field::user_agent, "LinkChat-AI/1.0"); request.set(http::field::content_type, "application/json");
+        request.set(http::field::host, host); request.set(http::field::user_agent, "LinkChat-AI/1.1"); request.set(http::field::content_type, "application/json");
         request.body() = Json::writeString(writer, body); request.prepare_payload();
         http::response<http::string_body> response;
         beast::flat_buffer buffer;
@@ -68,6 +70,9 @@ AiReply AiChatClient::Chat(const std::string& system_prompt,
         if (response_status != static_cast<unsigned int>(http::status::ok)) return {false, "", "llama.cpp returned HTTP " + std::to_string(response_status)};
         Json::Value root; Json::CharReaderBuilder reader; std::string errors; std::istringstream input(response_body);
         if (!Json::parseFromStream(reader, input, &root, &errors)) return {false, "", "invalid llama.cpp JSON response: " + errors};
+        if (!root["choices"].isArray() || root["choices"].empty() ||
+            !root["choices"][0]["message"]["content"].isString())
+            return {false, "", "AI response missing choices[0].message.content"};
         const std::string content = root["choices"][0]["message"]["content"].asString();
         if (content.empty()) return {false, "", "llama.cpp returned an empty response"};
         return {true, content, ""};
